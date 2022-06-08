@@ -18,19 +18,15 @@ void usage ()
 
 void processing (void)
 {
-    int *input;
-    *input = fopen("input.txt", "r");
-    int *output;
-    *output = fopen("output.txt", "w");
+    /*FILE *input = fopen("input.txt", "r");
+    FILE *output  = fopen("output.txt", "w");
 
     if(!input) printf("Não abriu entrada\n");
-    if(!output) printf("Não abriu saída\n");
+    if(!output) printf("Não abriu saída\n");*/
     
-    char *buffer;
+    int buffer = 1; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
 
-    /*int buffer = 1; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
-
-    *while (buffer > -1)
+    while (buffer > -1)
     {
         buffer = fgetc(INPUT); printf("TENTOU LER BYTES\n");
         if ((buffer == 39)
@@ -46,12 +42,12 @@ void processing (void)
             fputc(buffer, OUTPUT);
         }
         fputc(buffer, OUTPUT);
-    }*/
+    }
 
-    int n = 0;
+    /*int n = 0;
 
     while ((n = read(INPUT, buffer, BUFFERSIZE)) > 0)
-        write(OUTPUT, buffer, n);
+        write(OUTPUT, buffer, n);*/
 
     fclose(INPUT);
     fclose(OUTPUT);
