@@ -1,0 +1,2 @@
+Isto e um exemplo de um texto de tamanho decente e multiplos paragrafos, porem sem correta acentuacao.
+Foi criado para testar se a main do index.c esta funcionando direito.
