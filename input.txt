@@ -1,0 +1,1 @@
+Algumas palavras para testar se o codigo funciona. Como C trabalha com USASCII, a acentuacao nao funciona.
