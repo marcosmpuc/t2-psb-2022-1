@@ -69,10 +69,10 @@ void processing (void)
         int n = 0;
         //char paragraphCount[4] = { NULL, NULL, NULL, '0'};
         int has_to_add = 0;
+        int paragraph_number = 1;
 
         while(test = line_buffer[n])
         {
-            printf("TENTOU LER BYTES\n");
             if (test == EOF)
                 return;
             if (test == '\n')
@@ -90,13 +90,13 @@ void processing (void)
                     has_to_add = 1;
                 }
                 
-                fputc(test, outputTXT); printf("ESCREVEU BYTES\n");
+                printf("%c", test);
+                fputc(test, outputTXT);
                 fputc(test, outputHTML);
                 n++;
             }
             else
             {
-                printf("NÃO ACHOU CARACTERE ÚTIL\n");
                 if (has_to_add)
                 {
                     n++;
@@ -108,6 +108,7 @@ void processing (void)
                     fputc('<', outputHTML);
                     fputc('p', outputHTML);
                     fputc('>', outputHTML);
+                    printf(": parágrafo %d\n", paragraph_number);
                     addParagraphInfo(n, outputTXT, outputHTML);
                     fputc('<', outputHTML);
                     fputc('/', outputHTML);
