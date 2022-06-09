@@ -34,7 +34,10 @@ void usage (void)
     -h para gerar arquivo HTML\n\
     \n\
     -t to generate .txt file\n\
-    -t para gerar arquivo .txt");
+    -t para gerar arquivo .txt\n\
+    \n\
+    -c to generate .csv file (order of columns: word; paragraph. separator: comma)\n\
+    -c para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
 }
 
 void addParagraphInfo (int position_to_write_at, FILE *output)
@@ -68,11 +71,12 @@ void addParagraphInfo (int position_to_write_at, FILE *output)
     }
 }*/
 
-void processing (int print_on_terminal, int print_in_html, int print_in_txt)
+void processing (int print_on_terminal, int print_in_html, int print_in_txt, int print_in_csv)
 {
     FILE *input = fopen("input.txt", "r+");
     FILE *outputTXT  = fopen("output.txt", "w+");
     FILE *outputHTML = fopen("output.html", "w+");
+    FILE *outputCSV = fopen("output.CSV", "w+");
 
     while (fgets(line_buffer, BUFFERSIZE, input))
     {
@@ -110,6 +114,8 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt)
                     fputc(test, outputTXT);
                 if (print_in_html)
                     fputc(test, outputHTML);
+                if (print_in_csv)
+                    fputc(test, outputCSV);
                 
                 n++;
             }
@@ -146,6 +152,12 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt)
                         fputc(paragraph_number, outputTXT);
                         fputc('\n', outputTXT);
                     }
+                    if (print_in_csv)
+                    {
+                        fputc(',', outputCSV);
+                        fputc(paragraph_number, outputCSV);
+                        fputc('\n', outputCSV);
+                    }
                     
                     has_to_add = 0;
                 }
@@ -170,8 +182,9 @@ int main (int argc, char **argv)
     int print_on_terminal = 0; 
     int print_in_html = 0;
     int print_in_txt = 0;
+    int print_in_csv = 0;
 
-    while ((op = getopt(argc, argv, "vushte")) != EOF)
+    while ((op = getopt(argc, argv, "vushtce")) != EOF)
     {
         switch (op)
         {
@@ -189,6 +202,9 @@ int main (int argc, char **argv)
             case 't':
                 print_in_txt = 1;
                 break;
+            case 'c':
+                print_in_csv = 1;
+                break;
             case 'e':
                 return 0;
             default:
@@ -196,10 +212,10 @@ int main (int argc, char **argv)
         }
     }
     
-    if (!print_on_terminal && !print_in_html && !print_in_txt)
+    if (!print_on_terminal && !print_in_html && !print_in_txt && !print_in_csv)
         usage();
     else
-        processing(print_on_terminal, print_in_html, print_in_txt);
+        processing(print_on_terminal, print_in_html, print_in_txt, print_in_csv);
 
     return 0;
 }
