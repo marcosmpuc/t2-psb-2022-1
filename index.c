@@ -5,6 +5,8 @@
 #define OUTPUT fopen("output.txt", "wb")
 
 #define BUFFERSIZE 512
+static char line_buffer[BUFFERSIZE];
+//static char *paragraph_number_last_digit = line_buffer[BUFFERSIZE - 1];
 
 void help ()
 {
@@ -15,6 +17,39 @@ void usage ()
 {
     printf("USAGE FUNCIONA?");
 }
+
+void addParagraphInfo (int position_to_write_at, FILE *output)
+{
+    char sentence[12] = {':', ' ', 'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
+    for (int i = 0; i < 12; i++)
+        fputc(sentence[i], output);
+    
+    fputc('1', output);
+    fputc('\n', output);
+
+}
+
+/*char* paragraphIncrement (char digits[])
+{
+    while (1) {
+        
+        if (*lastDigit < '9')
+        {
+            *lastDigit++;
+            return lastDigit;
+        } 
+        else
+        {
+            *lastDigit = '0';
+            if (*(--lastDigit) < '1' )
+            {
+                *lastDigit = '1';
+                return lastDigit;
+            }
+        }
+
+    }
+}*/
 
 void processing (void)
 {
@@ -32,35 +67,46 @@ void processing (void)
     }
     */
     
-    char buffer[BUFFERSIZE]; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
+    //char buffer[BUFFERSIZE]; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
 
-    fgets(buffer, BUFFERSIZE, input);
+    fgets(line_buffer, BUFFERSIZE, input);
     char test;
     int n = 0;
-    int paragraphCount = 0;
+    //char paragraphCount[4] = { NULL, NULL, NULL, '0'};
+    int has_to_add = 0;
 
-    while(test = buffer[n])
+    while(test = line_buffer[n])
     {
         printf("TENTOU LER BYTES\n");
-        if(test == '\0')
+        if(test == EOF)
             break;
         if ((test == 39)
             || (test >= 65 && test <= 90)
             || (test >= 97 && test <= 122))
         {
-            printf("ACHOU CARACTERES ÚTEIS\n");
+            has_to_add = 1; printf("ACHOU CARACTERES ÚTEIS\n");
             fputc(test, output); printf("ESCREVEU BYTES\n");
+            n++;
         }
         else
         {
             printf("NÃO ACHOU CARACTERE ÚTIL\n");
-            char sentence[12] = {',', ' ', 'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
+            if (has_to_add)
+            {
+                addParagraphInfo(++n, output);
+                has_to_add = 0;
+            }
+            else
+                n++;
+            /*char sentence[12] = {',', ' ', 'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
             for (int i = 0; i < 12; i++)
                 fputc(sentence[i], output);
-            // escreve número do parágrafo
-            fputc('\n', output);
+            paragraphIncrement(paragraphCount);
+            /*char *check = paragraphCount;
+            for (int i = 0; check == NULL; check--)
+                fputc(*check, output);*/
+            //fputc(line_buffer, output);
         }
-        n++;
     }
 
     /*while (fgets(buffer, 106, INPUT))
