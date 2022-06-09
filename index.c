@@ -151,7 +151,7 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt, int
                 {
                     n++;
                     if (print_on_terminal)
-                        printf(": parágrafo %d\n", paragraph_number);
+                        printf(": parágrafo %c\n", paragraph_number);
                     if(print_in_html)
                     {
                         fputc('<', outputHTML);
@@ -216,7 +216,7 @@ int main (int argc, char **argv)
 
     int op;
     int print_on_terminal = 0; 
-    int print_in_html = 1;
+    int print_in_html = 0;
     int print_in_txt = 0;
     int print_in_csv = 0;
 
