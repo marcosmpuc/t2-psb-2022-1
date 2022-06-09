@@ -3,8 +3,8 @@
 //#include "startHTML.h"
 //#include "endHTML.h"
 
-#define INPUT fopen("input.txt", "rb")
-#define OUTPUT fopen("output.txt", "wb")
+//#define INPUT fopen("input.txt", "rb")
+//#define OUTPUT fopen("output.txt", "wb")
 
 #define BUFFERSIZE 512
 static char line_buffer[BUFFERSIZE];
@@ -28,8 +28,8 @@ static char HTML_end[] = {
 void version (void)
 {
     printf("\
-    EN-US: Index generator - Versão 0.3.12\n\
-    PT-BR: Gerador de índice remissivo - Versão 0.3.12\n\
+    EN-US: Index generator - Versão 0.3.17\n\
+    PT-BR: Gerador de índice remissivo - Versão 0.3.17\n\
     \n\
     -u to view usage options\n\
     -u para visualizar opções de visualização");
