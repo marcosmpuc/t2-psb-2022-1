@@ -18,8 +18,9 @@ void usage ()
 
 void processing (void)
 {
-    
-    FILE *input = fopen("input.txt", "r");
+    /*
+    FILE *input;
+    input = fopen("input.txt", "r");
     FILE *output  = fopen("output.txt", "w");
 
     if(!input) printf("Não abriu entrada\n");
@@ -31,16 +32,16 @@ void processing (void)
     {
         write(output, buffer, n);
     }
+    */
     
-    
-    /*int buffer = 1; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
+    char* buffer; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
 
-    while (buffer > -1)
+    while (fgets(buffer,106,INPUT))
     {
-        buffer = fgetc(INPUT); printf("TENTOU LER BYTES\n");
-        if ((buffer == 39)
-            || (buffer >= 65 && buffer <= 90)
-            || (buffer >= 97 && buffer <= 122))
+        printf("TENTOU LER BYTES\n");
+        if ((*buffer == 39)
+            || (*buffer >= 65 && *buffer <= 90)
+            || (*buffer >= 97 && *buffer <= 122))
         {
             printf("ACHOU CARACTERES ÚTEIS\n");
             fputc(buffer, OUTPUT); printf("ESCREVEU BYTES\n");
@@ -50,25 +51,23 @@ void processing (void)
             printf("NÃO ACHOU CARACTERE ÚTIL\n");
             fputc(buffer, OUTPUT);
         }
-    }*/
-
-    /*int n = 0;
+    }
+    /*
+    int n = 0;
 
     while ((n = read(INPUT, buffer, BUFFERSIZE)) > 0)
-        write(OUTPUT, buffer, n);*/
+        write(OUTPUT, buffer, n);
 
     fclose(input);
     fclose(output);
-
+    */
 
     return;
 }
 
 int main (int argc, char **argv)
 {
-
     processing();
-
     int i;
     for (i = 0; i < argc; i ++)
     {
@@ -86,11 +85,11 @@ int main (int argc, char **argv)
                 break; 
             case 'h':
                 help();
+                break;
             default:
                 exit(0);
                 break;
         }
     }
-
     return 0;
 }
