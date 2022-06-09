@@ -69,73 +69,77 @@ void processing (void)
     
     //char buffer[BUFFERSIZE]; printf("DECLARAÇÃO: POINTER DE CARACTERE buffer\n");
 
-    fgets(line_buffer, BUFFERSIZE, input);
-    char test;
-    int n = 0;
-    //char paragraphCount[4] = { NULL, NULL, NULL, '0'};
-    int has_to_add = 0;
-
-    while(test = line_buffer[n])
+    while (fgets(line_buffer, BUFFERSIZE, input))
     {
-        printf("TENTOU LER BYTES\n");
-        if(test == EOF)
-            break;
-        if ((test == 39)
-            || (test >= 65 && test <= 90)
-            || (test >= 97 && test <= 122))
+        char test;
+        int n = 0;
+        //char paragraphCount[4] = { NULL, NULL, NULL, '0'};
+        int has_to_add = 0;
+
+        while(test = line_buffer[n])
         {
-            has_to_add = 1; printf("ACHOU CARACTERES ÚTEIS\n");
-            fputc(test, output); printf("ESCREVEU BYTES\n");
-            n++;
-        }
-        else
-        {
-            printf("NÃO ACHOU CARACTERE ÚTIL\n");
-            if (has_to_add)
+            printf("TENTOU LER BYTES\n");
+            if (test == EOF)
+                return;
+            if (test == '\n')
+                break;
+            if ((test == 39)
+                || (test >= 65 && test <= 90)
+                || (test >= 97 && test <= 122))
             {
-                addParagraphInfo(++n, output);
-                has_to_add = 0;
+                has_to_add = 1; printf("ACHOU CARACTERES ÚTEIS\n");
+                fputc(test, output); printf("ESCREVEU BYTES\n");
+                n++;
             }
             else
-                n++;
-            /*char sentence[12] = {',', ' ', 'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
-            for (int i = 0; i < 12; i++)
-                fputc(sentence[i], output);
-            paragraphIncrement(paragraphCount);
-            /*char *check = paragraphCount;
-            for (int i = 0; check == NULL; check--)
-                fputc(*check, output);*/
-            //fputc(line_buffer, output);
+            {
+                printf("NÃO ACHOU CARACTERE ÚTIL\n");
+                if (has_to_add)
+                {
+                    addParagraphInfo(++n, output);
+                    has_to_add = 0;
+                }
+                else
+                    n++;
+                /*char sentence[12] = {',', ' ', 'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
+                for (int i = 0; i < 12; i++)
+                    fputc(sentence[i], output);
+                paragraphIncrement(paragraphCount);
+                /*char *check = paragraphCount;
+                for (int i = 0; check == NULL; check--)
+                    fputc(*check, output);*/
+                //fputc(line_buffer, output);
+            }
         }
+
+        /*while (fgets(buffer, 106, INPUT))
+        {
+            printf("TENTOU LER BYTES\n");
+            if(*buffer == '\0')
+                break;
+            if ((*buffer == 39)
+                || (*buffer >= 65 && *buffer <= 90)
+                || (*buffer >= 97 && *buffer <= 122))
+            {
+                printf("ACHOU CARACTERES ÚTEIS\n");
+                fputc(buffer, OUTPUT); printf("ESCREVEU BYTES\n");
+            }
+            else
+            {
+                printf("NÃO ACHOU CARACTERE ÚTIL\n");
+                fputc(buffer, OUTPUT);
+            }
+        }*/
+        /*
+        int n = 0;
+
+        while ((n = read(INPUT, buffer, BUFFERSIZE)) > 0)
+            write(OUTPUT, buffer, n);
+
+        fclose(input);
+        fclose(output);
+        */
     }
-
-    /*while (fgets(buffer, 106, INPUT))
-    {
-        printf("TENTOU LER BYTES\n");
-        if(*buffer == '\0')
-            break;
-        if ((*buffer == 39)
-            || (*buffer >= 65 && *buffer <= 90)
-            || (*buffer >= 97 && *buffer <= 122))
-        {
-            printf("ACHOU CARACTERES ÚTEIS\n");
-            fputc(buffer, OUTPUT); printf("ESCREVEU BYTES\n");
-        }
-        else
-        {
-            printf("NÃO ACHOU CARACTERE ÚTIL\n");
-            fputc(buffer, OUTPUT);
-        }
-    }*/
-    /*
-    int n = 0;
-
-    while ((n = read(INPUT, buffer, BUFFERSIZE)) > 0)
-        write(OUTPUT, buffer, n);
-
-    fclose(input);
-    fclose(output);
-    */
 
     return;
 }
