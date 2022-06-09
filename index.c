@@ -171,10 +171,12 @@ int main (int argc, char **argv)
     int print_in_html = 0;
     int print_in_txt = 0;
 
-    while ((op = getopt(argc, argv, "ushte")) != EOF)
+    while ((op = getopt(argc, argv, "vushte")) != EOF)
     {
         switch (op)
         {
+            case 'v':
+                version();
             case 'u':
                 usage();
                 break;
@@ -190,11 +192,14 @@ int main (int argc, char **argv)
             case 'e':
                 return 0;
             default:
-                version();
+                usage();
         }
     }
-
-    processing(print_on_terminal, print_in_html, print_in_txt);
+    
+    if (!print_on_terminal && !print_in_html && !print_in_txt)
+        usage();
+    else
+        processing(print_on_terminal, print_in_html, print_in_txt);
 
     return 0;
 }
