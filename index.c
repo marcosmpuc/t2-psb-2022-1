@@ -1,11 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
+//#include "startHTML.h"
+//#include "endHTML.h"
 
 #define INPUT fopen("input.txt", "rb")
 #define OUTPUT fopen("output.txt", "wb")
 
 #define BUFFERSIZE 512
 static char line_buffer[BUFFERSIZE];
+static char HTML_start[] = {
+        '<', '!', 'D', 'O', 'C', 'T', 'Y', 'P', 'E', ' ', 'h', 't', 'm', 'l', '>', '\n',
+        '<', 'h', 't', 'm', 'l', ' ', 'l', 'a', 'n', 'g', '=', '"', 'p', 't', '"', '>', '\n',
+        '\t', '<', 'h', 'e', 'a', 'd', '>', '\n',
+        '\t', '\t', '<', 'm', 'e', 't', 'a', ' ', 'c', 'h', 'a', 'r', 's', 'e', 't', '=', '"', 'U', 'T', 'F', '-', '8', '"', ' ', '/', '>', '\n',
+        '\t', '\t', '<', 'l', 'i', 'n', 'k', ' ', 'r', 'e', 'l', ' ', '=', '"', 's', 't', 'y', 'l', 'e', 's', 'h', 'e', 'e', 't', '"', ' ', 'h', 'r', 'e', 'f', '=', '"', 'o', 'u', 't', 'p', 'u', 't', '.', 'c', 's', 's', '"', '>', '\n',
+        '\t', '\t', '<', 't', 'i', 't', 'l', 'e', '>', 'O', 'u', 't', 'p', 'u', 't', '<', '/', 't', 'i', 't', 'l', 'e', '>', '\n',
+        '\t', '<', '/', 'h', 'e', 'a', 'd', '>', '\n',
+        '\t', '<', 'b', 'o', 'd', 'y', '>', '\n'
+    };
+static char HTML_end[] = {
+        '\n',
+        '\t', '<', '/', 'b', 'o', 'd', 'y', '>', '\n',
+        '<', '/', 'h', 't', 'm', 'l', '>', '\n'
+    };
 //static char *paragraph_number_last_digit = line_buffer[BUFFERSIZE - 1];
 
 void version (void)
@@ -77,6 +94,16 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt, int
     FILE *outputTXT  = fopen("output.txt", "w+");
     FILE *outputHTML = fopen("output.html", "w+");
     FILE *outputCSV = fopen("output.CSV", "w+");
+    
+    if (print_in_html)
+    {
+        char *pointer = HTML_start;
+        while(fputc(*pointer, outputHTML))
+        {
+            if (!*(++pointer)) break;
+        }
+        //start_html(outputHTML);
+    }
 
     while (fgets(line_buffer, BUFFERSIZE, input))
     {
@@ -86,10 +113,9 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt, int
         int has_to_add = 0;
         char paragraph_number = '1';
 
+
         while(test = line_buffer[n])
         {
-            if (test == EOF)
-                return;
             if (test == '\n')
                 break;
             if ((test == 39)
@@ -167,6 +193,16 @@ void processing (int print_on_terminal, int print_in_html, int print_in_txt, int
         }
     }
 
+    if (print_in_html)
+    {
+        char *pointer = HTML_end;
+        while(fputc(*pointer, outputHTML))
+        {
+            if (!*(++pointer)) break;
+        }
+        //end_html(outputHTML);
+    }
+
     return;
 }
 
@@ -180,7 +216,7 @@ int main (int argc, char **argv)
 
     int op;
     int print_on_terminal = 0; 
-    int print_in_html = 0;
+    int print_in_html = 1;
     int print_in_txt = 0;
     int print_in_csv = 0;
 
