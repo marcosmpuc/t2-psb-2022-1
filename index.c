@@ -62,49 +62,124 @@ void newList(List *list)
 void 
 insertWord(List *list, int paragraph_number, char* wordBuffer)
 {
-    int i;
     Node *new;
-    if((new = (Node*) malloc(sizeof(Node)))==NULL)
-        return -1;  
-
-     //insere \0 nas palavras do novo Node
-    for(i=0; i<30;i++)
-    {
-        new->word[i] = '\0';
-    }
-                
-    //zera os paragrafos do novo Node
-    for(i=0; i<25;i++)
-    {
-    new->paragraph[i] = 0;
-    }
-    i=0;
-
-    int j = 0;
-    while(wordBuffer[j] != '\0'){
-        new->word[j] = wordBuffer[j];
-        j++;
-    }
-    j = 0;
-
-    while (new->paragraph[j] != 0)
-    {
-    j++;
-    }
-    new->paragraph[j]=paragraph_number;
+    int i;
 
     if(list->head==NULL)
-    {
+    {    
+        Node *new;
+        if((new = (Node*) malloc(sizeof(Node)))==NULL)
+            return -1;
+        for(i=0; i<30;i++)
+        {
+            new->word[i] = '\0';
+        }
+                    
+        //zera os paragrafos do novo Node
+        for(i=0; i<25;i++)
+        {
+            new->paragraph[i] = 0;
+        }
+        i=0;
+        int j = 0;
+        while(wordBuffer[j] != '\0'){
+            new->word[j] = wordBuffer[j];
+            j++;
+        }
+        j = 0;
+
+        while (new->paragraph[j] != 0)
+        {
+            j++;
+        }
+        new->paragraph[j]=paragraph_number;
+
         new -> next = NULL;
         list -> head = new;
         list -> tail = new;
+
+        list->listSize++;
+        printf("INSERIDO COM SUCESSO\n");
     }
-    else{
+    else
+    if(isEqual(list,wordBuffer)==0){
+
+        int i;
+        Node *new;
+        if((new = (Node*) malloc(sizeof(Node)))==NULL)
+            return -1;  
+
+        //insere \0 nas palavras do novo Node
+        for(i=0; i<30;i++)
+        {
+            new->word[i] = '\0';
+        }
+                    
+        //zera os paragrafos do novo Node
+        for(i=0; i<25;i++)
+        {
+        new->paragraph[i] = 0;
+        }
+        i=0;
+
+        int j = 0;
+        while(wordBuffer[j] != '\0'){
+            new->word[j] = wordBuffer[j];
+            j++;
+        }
+        j = 0;
+
+        while (new->paragraph[j] != 0)
+        {
+        j++;
+        }
+        new->paragraph[j]=paragraph_number;
+
         new->next=list->head;
         list->head=new;
+        
+        list->listSize++;
+        printf("INSERIDO COM SUCESSO\n");
+    }else{
+        Node *aux = list->head;
+    
+        while(aux != NULL){
+
+            int retorno = strcmp(wordBuffer, aux->word);
+            //se 0 entao sao iguais
+            if(retorno == 0)
+            {                   
+                for(int i=0;i<25;i++)
+                {
+                    if(aux->paragraph[i]==0)
+                    {
+                        aux->paragraph[i]=paragraph_number;
+                        break;
+                    }
+                }
+            }
+            aux = aux->next; 
+        }
     }
-    list->listSize++;
-    printf("INSERIDO COM SUCESSO");
+}
+
+void sort(){
+}
+
+int isEqual(List *list, char *word){
+
+    Node *aux = list->head;
+    
+    while(aux != NULL){
+
+        int retorno = strcmp(word, aux->word);
+        //se 0 entao sao iguais
+        if(retorno == 0){
+            return 1;
+        }
+        aux = aux->next; 
+    }
+    return 0;//se forem iguais
 }
 
 void readInput(List *list)
