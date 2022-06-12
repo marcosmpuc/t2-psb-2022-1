@@ -75,6 +75,7 @@ void readInput(List *list)
         while(test = line_buffer[n]){
 
             if (test =='\n'){
+                paragraph_number++;
                 break;
             }
                 
@@ -86,13 +87,51 @@ void readInput(List *list)
                 i++;
                 n++;
             }
+
+            if(test == ' '){
+                   
+                Node *new;
+                if((new = (Node*) malloc(sizeof(Node)))==NULL)
+                    return -1;    
+
+                *new->word = word;
+                *new->paragraph = paragraph_number;
+
+                if(list->head==NULL)
+                {
+                    new -> next = NULL;
+                    list -> head = new;
+                    list -> tail = new;
+                }
+                else{
+                    new->next=list->head;
+                    list->head=new;
+                }
+                list->listSize++;
+                printf("INSERIDO COM SUCESSO");
+
+                n++;
+                i = 0;
+                word[i] = '\0';
+                
+            }
         }
-        if(list->head==NULL)
+    }
+}
+
+void printList(List *list)
+{
+    //FILE *outputTXT  = fopen("output.txt", "w+");
+    Node *aux = list->head;
+    printf("Tamanho da lista = %d\n",list->listSize);
+    while(aux != NULL){
+        printf("%s\n");
+        printf("Paragrafo: ");
+        while (aux->paragraph!=NULL)
         {
-            new -> next = NULL;
-            list -> head = new;
-            list -> tail = new;
+            printf("%d, ", aux->paragraph);
         }
+        aux = aux->next; 
     }
 }
 
@@ -105,6 +144,7 @@ int main (int argc, char **argv)
     
     newList(list);
     readInput(list);
+    printList(list);
 
     int i;
     for (i = 0; i < argc; i ++)
@@ -128,7 +168,8 @@ int main (int argc, char **argv)
                 usage();
                 break;
             case 's':
-                print_on_terminal = 1;
+                readInput(list);
+
                 break;
             case 'h':
                 print_in_html = 1;
