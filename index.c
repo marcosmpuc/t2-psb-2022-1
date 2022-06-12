@@ -68,10 +68,15 @@ void readInput(List *list)
     int n = 0;
     int paragraph_number = 1;
     char word[30];
-    int i = 0;
+    int i;
+
+    for(i=0; i<30;i++){
+        word[i] = '\0';
+    }
+    i=0;
 
     while(fgets(line_buffer, BUFFERSIZE, input))
-    {
+    {   
         while(test = line_buffer[n]){
 
             if (test =='\n'){
@@ -92,10 +97,22 @@ void readInput(List *list)
                    
                 Node *new;
                 if((new = (Node*) malloc(sizeof(Node)))==NULL)
-                    return -1;    
+                    return -1;  
 
-                *new->word = word;
-                *new->paragraph = paragraph_number;
+                for(i=0; i<30;i++){
+                    new->word[i] = '\0';
+                }
+                i=0;
+                int j = 0;
+                while(word[j] != '\0'){
+                    new->word[j] = word[j];
+                    j++;
+                }
+                j = 0;
+                while (new->paragraph[j] < 0)
+                {
+                   new->paragraph[j] = paragraph_number;
+                }
 
                 if(list->head==NULL)
                 {
@@ -111,9 +128,11 @@ void readInput(List *list)
                 printf("INSERIDO COM SUCESSO");
 
                 n++;
-                i = 0;
-                word[i] = '\0';
                 
+                for(i=0; i<30;i++){
+                    word[i] = '\0';
+                }
+                i=0;
             }
         }
     }
