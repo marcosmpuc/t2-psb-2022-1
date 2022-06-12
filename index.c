@@ -81,6 +81,7 @@ void readInput(List *list)
 
             if (test =='\n'){
                 paragraph_number++;
+                n=0;
                 break;
             }
                 
