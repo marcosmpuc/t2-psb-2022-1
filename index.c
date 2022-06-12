@@ -84,7 +84,7 @@ void readInput(List *list)
                 n=0;
                 break;
             }
-                
+            else                
             if((test == 39)
                 || (test >= 65 && test <= 90)
                 || (test >= 97 && test <= 122))
@@ -93,27 +93,37 @@ void readInput(List *list)
                 i++;
                 n++;
             }
-
+            else
             if(test == ' '){
                    
                 Node *new;
                 if((new = (Node*) malloc(sizeof(Node)))==NULL)
                     return -1;  
 
+                //insere \0 nas palavras do novo Node
                 for(i=0; i<30;i++){
                     new->word[i] = '\0';
                 }
+                
+                //zera os paragrafos do novo Node
+                for(i=0; i<25;i++)
+                {
+                    new->paragraph[i] = 0;
+                }
                 i=0;
+
                 int j = 0;
                 while(word[j] != '\0'){
                     new->word[j] = word[j];
                     j++;
                 }
                 j = 0;
-                while (new->paragraph[j] < 0)
+
+                while (new->paragraph[j] != 0)
                 {
-                   new->paragraph[j] = paragraph_number;
+                   j++;
                 }
+                new->paragraph[j]=paragraph_number;
 
                 if(list->head==NULL)
                 {
@@ -135,22 +145,83 @@ void readInput(List *list)
                 }
                 i=0;
             }
+            else{
+                if(line_buffer[n+1]=='\n'){
+
+                
+                    Node *new;
+                    if((new = (Node*) malloc(sizeof(Node)))==NULL)
+                        return -1;  
+
+                    for(i=0; i<30;i++){
+                        new->word[i] = '\0';
+                    }
+                    for(i=0; i<25;i++)
+                    {
+                        new->paragraph[i] = 0;
+                    }
+                    i=0;
+
+                    int j = 0;
+                    while(word[j] != '\0'){
+                        new->word[j] = word[j];
+                        j++;
+                    }
+                    j=0;
+                    while (new->paragraph[j] != 0)
+                    {
+                        j++;
+                    }
+                    new->paragraph[j]=paragraph_number;
+
+
+                    if(list->head==NULL)
+                    {
+                        new -> next = NULL;
+                        list -> head = new;
+                        list -> tail = new;
+                    }
+                    else{
+                        new->next=list->head;
+                        list->head=new;
+                    }
+                    list->listSize++;
+                    printf("INSERIDO COM SUCESSO");
+
+
+
+                    paragraph_number++;
+                    n=0;
+
+                    for(i=0; i<30;i++){
+                    word[i] = '\0';                    
+                    }
+
+                    i=0;
+                    break;
+                }else{
+                    n++;
+                }
+            }
         }
     }
 }
 
 void printList(List *list)
-{
-    //FILE *outputTXT  = fopen("output.txt", "w+");
+{   
+    int x=0;
     Node *aux = list->head;
     printf("Tamanho da lista = %d\n",list->listSize);
     while(aux != NULL){
-        printf("%s\n");
         printf("Paragrafo: ");
-        while (aux->paragraph!=NULL)
+                
+        while (aux->paragraph[x]> 0)
         {
-            printf("%d, ", aux->paragraph);
+            printf("%d, ", aux->paragraph[x]);
+            x++;
         }
+        printf("\n");
+        x=0;
         aux = aux->next; 
     }
 }
