@@ -128,9 +128,28 @@ void readInput(List *list)
         while(test = line_buffer[n]){
 
             if (test =='\n'){
-                paragraph_number++;
-                n=0;
-                break;
+                //PRECISA DE MAIS UM IF PARA CASO O ARQUIVO TENHA ACABADO
+                if(line_buffer[n+1]=='\0'){
+                    insertWord(list,paragraph_number,&word);
+                    for(i=0; i<30;i++){
+                        word[i] = '\0';
+                    }
+                    paragraph_number++;
+                    n=0;
+                    i=0;
+                    break;
+                }
+                else{
+                   insertWord(list,paragraph_number,&word);
+                    paragraph_number++;
+                    n=0;
+                    for(i=0; i<30;i++){
+                    word[i] = '\0';
+                    }
+                    i=0;
+                    break;
+                } 
+            
             }
             else                
             if((test == 39)
@@ -156,12 +175,12 @@ void readInput(List *list)
             else{
                 if(line_buffer[n+1]=='\n'){
 
+                    //if(line_buffer[n+2]=='\0') break;
                 
                     insertWord(list,paragraph_number,&word);
 
                     paragraph_number++;
                     n=0;
-
                     for(i=0; i<30;i++){
                     word[i] = '\0';                    
                     }
@@ -182,6 +201,7 @@ void printList(List *list)
     Node *aux = list->head;
     printf("Tamanho da lista = %d\n",list->listSize);
     while(aux != NULL){
+        printf("%s -> ",aux->word);
         printf("Paragrafo: ");
                 
         while (aux->paragraph[x]> 0)
@@ -209,7 +229,7 @@ int main (int argc, char **argv)
     int i;
     for (i = 0; i < argc; i ++)
     {
-        printf("%d- Parâmetro = \"%s\"\n", i + 1, argv[i]);
+        printf("%d- Parametro = \"%s\"\n", i + 1, argv[i]);
     }
 
     int op;
