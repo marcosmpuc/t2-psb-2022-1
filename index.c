@@ -145,7 +145,7 @@ insertWord(List *list, int paragraph_number, char* wordBuffer)
     
         while(aux != NULL){
 
-            int retorno = strcmp(wordBuffer, aux->word);
+            int retorno = stricmp(wordBuffer, aux->word);
             //se 0 entao sao iguais
             if(retorno == 0)
             {                   
@@ -172,7 +172,7 @@ int isEqual(List *list, char *word){
     
     while(aux != NULL){
 
-        int retorno = strcmp(word, aux->word);
+        int retorno = stricmp(word, aux->word);
         //se 0 entao sao iguais
         if(retorno == 0){
             return 1;
