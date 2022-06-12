@@ -1,29 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include "startHTML.h"
-//#include "endHTML.h"
-
-//#define INPUT fopen("input.txt", "rb")
-//#define OUTPUT fopen("output.txt", "wb")
+#include <string.h>
+#include <stdbool.h>
 
 #define BUFFERSIZE 512
 static char line_buffer[BUFFERSIZE];
-static char HTML_start[] = {
-        '<', '!', 'D', 'O', 'C', 'T', 'Y', 'P', 'E', ' ', 'h', 't', 'm', 'l', '>', '\n',
-        '<', 'h', 't', 'm', 'l', ' ', 'l', 'a', 'n', 'g', '=', '"', 'p', 't', '"', '>', '\n',
-        '\t', '<', 'h', 'e', 'a', 'd', '>', '\n',
-        '\t', '\t', '<', 'm', 'e', 't', 'a', ' ', 'c', 'h', 'a', 'r', 's', 'e', 't', '=', '"', 'U', 'T', 'F', '-', '8', '"', ' ', '/', '>', '\n',
-        '\t', '\t', '<', 'l', 'i', 'n', 'k', ' ', 'r', 'e', 'l', ' ', '=', '"', 's', 't', 'y', 'l', 'e', 's', 'h', 'e', 'e', 't', '"', ' ', 'h', 'r', 'e', 'f', '=', '"', 'o', 'u', 't', 'p', 'u', 't', '.', 'c', 's', 's', '"', '>', '\n',
-        '\t', '\t', '<', 't', 'i', 't', 'l', 'e', '>', 'O', 'u', 't', 'p', 'u', 't', '<', '/', 't', 'i', 't', 'l', 'e', '>', '\n',
-        '\t', '<', '/', 'h', 'e', 'a', 'd', '>', '\n',
-        '\t', '<', 'b', 'o', 'd', 'y', '>', '\n'
-    };
-static char HTML_end[] = {
-        '\n',
-        '\t', '<', '/', 'b', 'o', 'd', 'y', '>', '\n',
-        '<', '/', 'h', 't', 'm', 'l', '>', '\n'
-    };
-//static char *paragraph_number_last_digit = line_buffer[BUFFERSIZE - 1];
+
+typedef struct Node
+{
+    char word[30];
+    int paragraph[25];     
+    struct Node *next;
+}Node;
+
+typedef struct
+{
+    Node *head;
+    Node *tail;
+    int listSize;
+}List;
 
 void version (void)
 {
@@ -57,157 +52,60 @@ void usage (void)
     -c para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
 }
 
-void addParagraphInfo (int position_to_write_at, FILE *output)
+void newList(List *list)
 {
-    char sentence[10] = {'p', 'a', 'r', 'a', 'g', 'r', 'a', 'f', 'o', ' '};
-    for (int i = 0; i < 10; i++)
-    {
-        fputc(sentence[i], output);
-    }
+    list -> head = NULL;
+    list -> tail = NULL;
+    list -> listSize = 0;
 }
 
-/*char* paragraphIncrement (char digits[])
+void readInput(List *list)
 {
-    while (1) {
-        
-        if (*lastDigit < '9')
-        {
-            *lastDigit++;
-            return lastDigit;
-        } 
-        else
-        {
-            *lastDigit = '0';
-            if (*(--lastDigit) < '1' )
-            {
-                *lastDigit = '1';
-                return lastDigit;
-            }
-        }
+    Node *new;
+    FILE *input = fopen("input.txt","r");
 
-    }
-}*/
+    char test;
+    int n = 0;
+    int paragraph_number = 1;
+    char word[30];
+    int i = 0;
 
-void processing (int print_on_terminal, int print_in_html, int print_in_txt, int print_in_csv)
-{
-    FILE *input = fopen("input.txt", "r+");
-    FILE *outputTXT  = fopen("output.txt", "w+");
-    FILE *outputHTML = fopen("output.html", "w+");
-    FILE *outputCSV = fopen("output.CSV", "w+");
-    
-    if (print_in_html)
+    while(fgets(line_buffer, BUFFERSIZE, input))
     {
-        char *pointer = HTML_start;
-        while(fputc(*pointer, outputHTML))
-        {
-            if (!*(++pointer)) break;
-        }
-        //start_html(outputHTML);
-    }
+        while(test = line_buffer[n]){
 
-    while (fgets(line_buffer, BUFFERSIZE, input))
-    {
-        char test;
-        int n = 0;
-        //char paragraphCount[4] = { NULL, NULL, NULL, '0'};
-        int has_to_add = 0;
-        char paragraph_number = '1';
-
-
-        while(test = line_buffer[n])
-        {
-            if (test == '\n')
+            if (test =='\n'){
                 break;
-            if ((test == 39)
+            }
+                
+            if((test == 39)
                 || (test >= 65 && test <= 90)
                 || (test >= 97 && test <= 122))
             {
-                if(has_to_add == 0)
-                {
-                    if (print_in_html)
-                    {
-                        fputc('<', outputHTML);
-                        fputc('h', outputHTML);
-                        fputc('1', outputHTML);
-                        fputc('>', outputHTML);
-                    }
-                    has_to_add = 1;
-                }
-                
-                if (print_on_terminal)
-                    printf("%c", test);
-                if (print_in_txt)
-                    fputc(test, outputTXT);
-                if (print_in_html)
-                    fputc(test, outputHTML);
-                if (print_in_csv)
-                    fputc(test, outputCSV);
-                
+                word[i] = test;
+                i++;
                 n++;
             }
-            else
-            {
-                if (has_to_add)
-                {
-                    n++;
-                    if (print_on_terminal)
-                        printf(": parágrafo %c\n", paragraph_number);
-                    if(print_in_html)
-                    {
-                        fputc('<', outputHTML);
-                        fputc('/', outputHTML);
-                        fputc('h', outputHTML);
-                        fputc('1', outputHTML);
-                        fputc('>', outputHTML);
-                        fputc('<', outputHTML);
-                        fputc('p', outputHTML);
-                        fputc('>', outputHTML);
-                        addParagraphInfo(n, outputHTML);
-                        fputc(paragraph_number, outputHTML);
-                        fputc('<', outputHTML);
-                        fputc('/', outputHTML);
-                        fputc('p', outputHTML);
-                        fputc('>', outputHTML);
-                        fputc('\n', outputHTML);
-                    }
-                    if (print_in_txt)
-                    {
-                        fputc(':', outputTXT);
-                        fputc(' ', outputTXT);
-                        addParagraphInfo(n, outputTXT);
-                        fputc(paragraph_number, outputTXT);
-                        fputc('\n', outputTXT);
-                    }
-                    if (print_in_csv)
-                    {
-                        fputc(',', outputCSV);
-                        fputc(paragraph_number, outputCSV);
-                        fputc('\n', outputCSV);
-                    }
-                    
-                    has_to_add = 0;
-                }
-                else
-                    n++;
-            }
         }
-    }
-
-    if (print_in_html)
-    {
-        char *pointer = HTML_end;
-        while(fputc(*pointer, outputHTML))
+        if(list->head==NULL)
         {
-            if (!*(++pointer)) break;
+            new -> next = NULL;
+            list -> head = new;
+            list -> tail = new;
         }
-        //end_html(outputHTML);
     }
-
-    return;
 }
 
 int main (int argc, char **argv)
 {
+    List *list;
+
+    if(((list = (List*)malloc(sizeof(List))) == NULL))
+        return -1;
+    
+    newList(list);
+    readInput(list);
+
     int i;
     for (i = 0; i < argc; i ++)
     {
@@ -244,14 +142,7 @@ int main (int argc, char **argv)
             case 'e':
                 return 0;
             default:
-                usage();
+                readInput(list);
         }
     }
-    
-    if (!print_on_terminal && !print_in_html && !print_in_txt && !print_in_csv)
-        usage();
-    else
-        processing(print_on_terminal, print_in_html, print_in_txt, print_in_csv);
-
-    return 0;
 }
