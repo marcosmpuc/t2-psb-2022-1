@@ -157,8 +157,7 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     }
 }
 
-<<<<<<< HEAD
-void sort(List *list){
+void bubbleSort(List *list){
     if(list->listSize>1)
     {
         Node *node = list->head;
@@ -171,20 +170,11 @@ void sort(List *list){
                 int retorno = stricmp(node->word,nodeNext->word);
                 if(retorno>0)
                 {
-                    swap(node,nodeNext);
-                    node = nodeNext;
-                    nodeNext = nodeNext->next;                                        
+                    swap(node,nodeNext);                                      
                 }
-                else
-                if(retorno<0||retorno==0)
-                {
-                    node = nodeNext;
-                    nodeNext = nodeNext->next;
-                }
-                else{
-                    break;
-                }
+                nodeNext = nodeNext->next;
             }
+            node=node->next;
        }
     }  
 }
@@ -227,7 +217,7 @@ void swap(Node *node, Node* nodeNext)
         nodeNext->word[i]= auxWord[i];
         i++;
     }
-        i=0;
+    i=0;
     while(i<25)
     {
         nodeNext->paragraph[i]=auxParagraph[i];
@@ -238,15 +228,6 @@ void swap(Node *node, Node* nodeNext)
 int isEqual(List *list, char *word){
 
     Node *aux = list->head;
-=======
-void sort()
-{
-}
-
-int isEqual (List* list, char* word)
-{
-    Node *aux = list -> head;
->>>>>>> 0860b73907361529f8b361c56a7d2904975da382
     
     while (aux != NULL)
     {
@@ -380,11 +361,12 @@ int main (int argc, char** argv)
 {
     List *list;
 
-    if (((list = (List*)    (sizeof(List))) == NULL))
+    if (((list = (List*)malloc(sizeof(List))) == NULL))
         return -1;
     
     newList(list);
     readInput(list);
+    bubbleSort(list);
     printList(list);
 
     int i;
