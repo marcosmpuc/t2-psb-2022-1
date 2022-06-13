@@ -77,7 +77,13 @@ usage (void)
     -t (\"txt\") para gerar arquivo .txt\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\n\
     \n\
     -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma)\n\trequires 1 argument: desired name for output file (with filename extension)\n\
-    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula)\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)");
+    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula)\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\
+    \n\
+    -l (\"lookup\") to output on the terminal which paragraphs feature a given word\n\trequires 1 argument: desired word\n\
+    -l (\"lookup\") para escrever no terminal quais parágrafos apresentam certa palavra\n\trequer 1 argumento: palavra desejada\
+    \n\
+    -n (\"number\") to output the number of paragraphs that feature a given word\n\trequires 1 argument: desired word\n\
+    -n (\"number\") para escrever no terminal o número de parágrafos que apresentam certa palavra\n\trequer 1 argumento: palavra desejada");
 }
 
 void
@@ -128,7 +134,6 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
         list -> tail = new;
 
         list -> listSize++;
-        printf ("INSERIDO COM SUCESSO\n");
     }
     else if (isEqual (list, wordBuffer) == 0)
     {
@@ -164,7 +169,6 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
         list -> head = new;
         
         list -> listSize++;
-        printf ("INSERIDO COM SUCESSO\n");
     }
     else
     {
@@ -279,7 +283,7 @@ isEqual (List *list, char *word)
 
 
 Node*
-getWord (List *list, char *word)
+get_word (List *list, char *word)
 {
     Node *aux = list -> head;
     char wordIn[WORDSIZE];
@@ -296,8 +300,7 @@ getWord (List *list, char *word)
         if (retorno == 0)
             return aux;
         aux = aux -> next; 
-    }
-    
+    }   
 }
 
 void
@@ -514,6 +517,17 @@ printNode (Node* node)
 }
 
 int
+count_instances (List *list, char *word)
+{
+    Node *aux = get_word (list, word);
+    //int paragraph[] = aux -> paragraph;
+    int i = 0;
+    for (; aux -> paragraph[i] != '\0'; i++)
+        ;
+    return i;
+}
+
+int
 main (int argc, char** argv)
 {
     int i;
@@ -526,13 +540,28 @@ main (int argc, char** argv)
     bool print_in_txt = false;
     bool print_in_csv = false;
     bool lookup = false;
+    bool count = false;
     char *html_output_name = "output.html";
     char *txt_output_name = "output.txt";
     char *csv_output_name = "output.csv";
     char *input_name = "input.txt";
     Node *lookup_aux = NULL;
 
-    while ((op = getopt (argc, argv, "uhvi:sw:t:c:l:e")) != EOF)
+    /*static struct option const long_options[] =
+    {
+        {"usage", 0, NULL, 'u'},
+        {"help", 0, NULL, 'h'},
+        {"version", 0, NULL, 'v'},
+        {"input", 1, input_name, "input.txt"},
+        {"shell", 0, NULL, 's'},
+        {"web", 1, html_output_name, "html.txt"},
+        {"txt", 1, txt_output_name, "output.txt"},
+        {"csv", 1, csv_output_name, "csv.txt"},
+        {"lookup", lookup_aux, NULL, '\0'},
+        {NULL, 0, NULL, 0}
+    };*/
+
+    while ((op = getopt (argc, argv, "uhvi:sw:t:c:l:n:e")) != EOF)
     {
         switch (op)
         {
@@ -569,6 +598,10 @@ main (int argc, char** argv)
                 lookup = true;
                 lookup_aux = optarg;
                 return 0;
+            case 'n'://number
+                count = true;
+                lookup_aux = optarg;
+                break;
             case 'e'://exit
                 return 0;
         }
@@ -584,12 +617,23 @@ main (int argc, char** argv)
     readInput (input_name, list);
     bubbleSort (list);
 
+    if (count)
+    {
+        int total;
+        get_word (list, lookup_aux);
+        total = count_instances (list, lookup_aux);
+        printf ("A palavra \"%s\" foi encontrada em %d parágrafos.", lookup_aux, total);
+        return 0;
+    }
+
     if (lookup)
     {
-        getWord (list, lookup_aux);
+        get_word (list, lookup_aux);
         printf ("\"%s\" se encontra nos parágrafos\n", lookup_aux -> word);
         for (int i = 0; lookup_aux -> paragraph[i] != '\0'; i++)
             printf ("%d\n", lookup_aux -> paragraph[i]);
+        printf (".");
+        return 0;
     }
 
     if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
