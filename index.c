@@ -26,11 +26,21 @@ typedef struct
 void version (void)
 {
     printf ("\
-    EN-US: Index generator - Versão 0.3.17\n\
-    PT-BR: Gerador de índice remissivo - Versão 0.3.17\n\
+    EN-US: Index generator - Version x.x\n\
+    PT-BR: Gerador de índice remissivo - Versão x.x\n\
     \n\
     -u to view usage options\n\
     -u para visualizar opções de visualização");
+}
+
+void help (void)
+{
+    printf("\
+    EN-US: This software was created uniquely to fulfill a class assignment\n\
+    and is available solely per the authors' purposes. Technical support is not offered.\n\
+    PT-BR: Este software foi criado puramente para realizar um trabalho avaliativo\n\
+    e está disponível unicamente em função das necessidades dos autores. Não se oferece suporte técnico.
+    ")
 }
 
 void usage (void)
@@ -160,10 +170,6 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     }
 }
 
-<<<<<<< HEAD
-void sort()
-{
-=======
 void sort(List *list){
     if(list->listSize>1)
     {
@@ -234,7 +240,6 @@ void sort(List *list){
             }
        }
     }  
->>>>>>> 54fc66dd17544815f4f87d0bbba5a3bbd1955eb3
 }
 
 int isEqual (List* list, char* word)
@@ -413,6 +418,7 @@ int main (int argc, char** argv)
                 usage();
                 break;
             case 's':
+                print_on_terminal = 1;
                 readInput(list);
                 break;
             case 'w':
@@ -425,7 +431,7 @@ int main (int argc, char** argv)
                 print_in_csv = 1;
                 break;
             case 'h':
-                usage();
+                help();
                 break;
             case 'e':
                 return 0;
