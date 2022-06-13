@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "string.h"
 #include <stdbool.h>
 #include <unistd.h>
+
+using namespace std;
 
 #define BUFFERSIZE 512
 #define WORDSIZE 512
@@ -520,7 +522,6 @@ int
 count_instances (List *list, char *word)
 {
     Node *aux = get_word (list, word);
-    //int paragraph[] = aux -> paragraph;
     int i = 0;
     for (; aux -> paragraph[i] != '\0'; i++)
         ;
@@ -547,20 +548,6 @@ main (int argc, char** argv)
     char *input_name = "input.txt";
     Node *lookup_aux = NULL;
 
-    /*static struct option const long_options[] =
-    {
-        {"usage", 0, NULL, 'u'},
-        {"help", 0, NULL, 'h'},
-        {"version", 0, NULL, 'v'},
-        {"input", 1, input_name, "input.txt"},
-        {"shell", 0, NULL, 's'},
-        {"web", 1, html_output_name, "html.txt"},
-        {"txt", 1, txt_output_name, "output.txt"},
-        {"csv", 1, csv_output_name, "csv.txt"},
-        {"lookup", lookup_aux, NULL, '\0'},
-        {NULL, 0, NULL, 0}
-    };*/
-
     while ((op = getopt (argc, argv, "uhvi:sw:t:c:l:n:e")) != EOF)
     {
         switch (op)
@@ -574,7 +561,7 @@ main (int argc, char** argv)
             case 'v'://version
                 version ();
                 break;
-            case 'i':
+            case 'i'://inpu
                 if (optarg) input_name = optarg;
                 printf ("%s\n", optarg);
                 break;
@@ -594,7 +581,6 @@ main (int argc, char** argv)
                 if (optarg) csv_output_name = optarg;
                 break;
             case 'l'://lookup
-                //char optarg[WORDSIZE] = 
                 lookup = true;
                 lookup_aux = optarg;
                 return 0;
@@ -637,8 +623,13 @@ main (int argc, char** argv)
     }
 
     if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
+    {
         printList (list, print_on_terminal, print_in_html, html_output_name, print_in_txt, txt_output_name, print_in_csv, csv_output_name);
+        free(list);
+        free(lookup_aux);
+    }
     else
         usage ();
 
+    
 }
