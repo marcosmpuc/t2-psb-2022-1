@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #define BUFFERSIZE 512
 #define WORDSIZE 30
@@ -515,28 +516,41 @@ main (int argc, char** argv)
     bool print_in_txt = false;
     bool print_in_csv = false;
 
-    while ((op = getopt (argc, argv, "vuswtce")) != EOF)
+    Node *aux;
+
+    while ((op = getopt (argc, argv, "vuswtcl:e")) != EOF)
     {
         switch (op)
         {
-            case 'v':
+            case 'v'://version
                 version ();
-            case 'u':
+                break;
+            case 'u'://usage
                 usage ();
                 break;
-            case 's':
+            case 's'://shell
                 print_on_terminal = true;
                 break;
-            case 'w':
+            case 'w'://web
                 print_in_html = true;
                 break;
-            case 't':
+            case 't'://txt
                 print_in_txt = true;
                 break;
-            case 'c':
+            case 'c'://csv
                 print_in_csv = true;
                 break;
-            case 'e':
+            case 'l'://lookup
+                //char optarg[WORDSIZE] = 
+                aux = getWord (list, optarg);
+                printf ("\"%s\" se encontra nos parágrafos\n", aux -> word);
+                for (int i = 0; aux -> paragraph[i] != '\0'; i++)
+                    printf ("%d\n", aux -> paragraph[i]);
+                return 0;
+            case ':':
+                getWord(list, optarg);
+                break;
+            case 'e'://exit
                 return 0;
             default:
                 readInput (list);
