@@ -4,12 +4,14 @@
 #include <stdbool.h>
 
 #define BUFFERSIZE 512
+#define WORDSIZE 30
+#define PARAGRAPHCOUNT 25
 static char line_buffer[BUFFERSIZE];
 
 typedef struct Node
 {
-    char word[30];
-    int paragraph[25];     
+    char word[WORDSIZE];
+    int paragraph[PARAGRAPHCOUNT];     
     struct Node *next;
 } Node;
 
@@ -20,7 +22,8 @@ typedef struct
     int listSize;
 } List;
 
-void version (void)
+void
+version (void)
 {
     printf ("\
     EN-US: Index generator - Versão 0.3.17\n\
@@ -30,9 +33,10 @@ void version (void)
     -u para visualizar opções de visualização");
 }
 
-void usage (void)
+void
+usage (void)
 {
-    printf("\
+    printf ("\
     EN-US: Index generator command options - Versão 0.3.12\n\
     PT-BR: Opções de comando do gerador de índice remissivo - Versão 0.3.12\n\
     \n\
@@ -52,7 +56,8 @@ void usage (void)
     -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
 }
 
-void newList (List* list)
+void
+newList (List* list)
 {
     list -> head = NULL;
     list -> tail = NULL;
@@ -68,7 +73,7 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     if (list -> head == NULL)
     {    
         Node *new;
-        if ((new = (Node*) malloc(sizeof(Node))) == NULL)
+        if ((new = (Node*) malloc (sizeof (Node))) == NULL)
             return -1;
         for (i = 0; i < 30; i++)
             new -> word[i] = '\0';
@@ -98,26 +103,24 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
         list -> tail = new;
 
         list -> listSize++;
-        printf("INSERIDO COM SUCESSO\n");
+        printf ("INSERIDO COM SUCESSO\n");
     }
-
-    else
-    if (isEqual(list, wordBuffer) == 0)
+    else if (isEqual (list, wordBuffer) == 0)
     {
         int i;
         Node *new;
-        if((new = (Node*) malloc(sizeof(Node))) == NULL)
+        if ((new = (Node*) malloc (sizeof (Node))) == NULL)
             return -1;  
 
         //insere \0 nas palavras do novo Node
-        for(i = 0; i < 30; i++)
+        for (i = 0; i < 30; i++)
             new -> word[i] = '\0';
                     
         //zera os paragrafos do novo Node
-        for(i = 0; i < 25; i++)
+        for (i = 0; i < 25; i++)
             new -> paragraph[i] = 0;
 
-        i=0;
+        i = 0;
 
         int j = 0;
         while (wordBuffer[j] != '\0')
@@ -133,16 +136,17 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
         new -> paragraph[j] = paragraph_number;
 
         new -> next = list -> head;
-        list -> head=new;
+        list -> head = new;
         
         list -> listSize++;
-        printf("INSERIDO COM SUCESSO\n");
+        printf ("INSERIDO COM SUCESSO\n");
     }
     else
     {
         Node *aux = list -> head;
     
-        while (aux != NULL) {
+        while (aux != NULL)
+        {
             int retorno = stricmp(wordBuffer, aux -> word);
             //se 0 entao sao iguais
             if (retorno == 0)
@@ -157,81 +161,87 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     }
 }
 
-void bubbleSort(List *list){
-    if(list->listSize>1)
+void
+bubbleSort (List *list)
+{
+    if (list -> listSize>1)
     {
-        Node *node = list->head;
+        Node *node = list -> head;
        
-       while(node!=NULL)
+        while (node != NULL)
        {
-            Node *nodeNext = node->next;
-            while (nodeNext!=NULL)
+            Node *nodeNext = node -> next;
+            while (nodeNext != NULL)
             {
-                int retorno = stricmp(node->word,nodeNext->word);
-                if(retorno>0)
+                int retorno = stricmp (node->word,nodeNext->word);
+                if (retorno > 0)
                 {
-                    swap(node,nodeNext);                                      
+                    swap (node, nodeNext);                                      
                 }
-                nodeNext = nodeNext->next;
+                nodeNext = nodeNext -> next;
             }
-            node=node->next;
+            node = node -> next;
        }
     }  
 }
 
-void swap(Node *node, Node* nodeNext)
+void
+swap (Node *node, Node* nodeNext)
 {
-    //aux <- node
-    char auxWord[30];
-    int i = 0;
-    int auxParagraph[25];
+    char auxWord[WORDSIZE];
+    int auxParagraph[PARAGRAPHCOUNT];
 
-    while(i<30)
+    int i = 0;
+    while(i < WORDSIZE)
     {
-        auxWord[i]= node->word[i];
+        auxWord[i] = node -> word[i];
         i++;
     }
-    i=0;
-    while(i<25)
+    
+    i = 0;
+    while (i < PARAGRAPHCOUNT)
     {
-        auxParagraph[i]= node->paragraph[i];
+        auxParagraph[i] = node -> paragraph[i];
         i++;
     }
-    i=0;
-    //node <- nodeNext
-    while(i<30)
+
+    i = 0;
+    while (i < WORDSIZE)
     {
-        node->word[i] = nodeNext->word[i];
+        node -> word[i] = nodeNext -> word[i];
          i++;
     }
-    i=0;
-    while(i<25)
+
+    i = 0;
+    while (i < PARAGRAPHCOUNT)
     {
-        node->paragraph[i]=nodeNext->paragraph[i];
+        node -> paragraph[i] = nodeNext -> paragraph[i];
         i++;
     }
-    i=0;
-    //nodeNext <- aux
-    while(i<30)
+
+    i = 0;
+    while (i < WORDSIZE)
     {
-        nodeNext->word[i]= auxWord[i];
+        nodeNext -> word[i] = auxWord[i];
         i++;
     }
+
     i=0;
-    while(i<25)
+    while(i < PARAGRAPHCOUNT)
     {
-        nodeNext->paragraph[i]=auxParagraph[i];
+        nodeNext -> paragraph[i] = auxParagraph[i];
          i++;
     }
 }
 
-int isEqual(List *list, char *word){
-
-    Node *aux = list->head;
+int
+isEqual (List *list, char *word)
+{
+    Node *aux = list -> head;
     
     while (aux != NULL)
     {
-        int retorno = stricmp(word, aux->word);
+        int retorno = stricmp (word, aux -> word);
         //se 0 entao sao iguais
         if (retorno == 0)
             return 1;
@@ -243,19 +253,20 @@ int isEqual(List *list, char *word){
 }
 
 
-Node *getWord(List *list, char *word)
+Node*
+getWord (List *list, char *word)
 {
-    Node *aux = list->head;
-    char wordIn[30];
+    Node *aux = list -> head;
+    char wordIn[WORDSIZE];
     int i = 0;
-    while(i<30)
+    while(i < WORDSIZE)
     {   
         wordIn[i] = word[i];
         i++;
     }
     while (aux != NULL)
     {
-        int retorno = stricmp(wordIn, aux->word);
+        int retorno = stricmp (wordIn, aux -> word);
         //se 0 entao sao iguais
         if (retorno == 0)
             return aux;
@@ -264,10 +275,11 @@ Node *getWord(List *list, char *word)
     
 }
 
-void readInput (List* list)
+void
+readInput (List* list)
 {
     Node *new;
-    FILE *input = fopen("input.txt","r");
+    FILE *input = fopen ("input.txt","r");
 
     char test;
     int n = 0;
@@ -275,11 +287,11 @@ void readInput (List* list)
     char word[30];
     int i;
 
-    for(i = 0; i < 30; i++)
+    for (i = 0; i < 30; i++)
         word[i] = '\0';
     i = 0;
 
-    while (fgets(line_buffer, BUFFERSIZE, input))
+    while (fgets (line_buffer, BUFFERSIZE, input))
     {   
         while (test = line_buffer[n])
         {
@@ -289,7 +301,7 @@ void readInput (List* list)
                 //PRECISA DE MAIS UM IF PARA CASO O ARQUIVO TENHA ACABADO
                 if (line_buffer[n+1] == '\0')
                 {
-                    insertWord(list, paragraph_number, &word);
+                    insertWord (list, paragraph_number, &word);
                     for (i = 0; i < 30; i++)
                         word[i] = '\0';
                     
@@ -300,19 +312,17 @@ void readInput (List* list)
                 }
                 else
                 {
-                    insertWord(list, paragraph_number, &word);
+                    insertWord (list, paragraph_number, &word);
                     paragraph_number++;
                     n = 0;
-                    for(i = 0; i < 30; i++)
+                    for (i = 0; i < 30; i++)
                         word[i] = '\0';
                     
                     i = 0;
                     break;
                 } 
-            
             }
-            else                
-            if ((test == 39)
+            else if ((test == 39)
                 || (test >= 65 && test <= 90)
                 || (test >= 97 && test <= 122))
             {
@@ -320,34 +330,29 @@ void readInput (List* list)
                 i++;
                 n++;
             }
-            else
-            if (test == ' ')
-            {
-                   
-                insertWord(list, paragraph_number, &word);
-
+            else if (test == ' ')
+            {  
+                insertWord (list, paragraph_number, &word);
                 n++;
-                
-                for(i = 0; i < 30; i++){
+                for (i = 0; i < 30; i++)
                     word[i] = '\0';
-                }
+                
                 i = 0;
             }
             else
             {
-                if(line_buffer[n+1] == '\n')
+                if (line_buffer[n+1] == '\n')
                 {
-
                     //if(line_buffer[n+2]=='\0') break;
                 
-                    insertWord(list, paragraph_number, &word);
+                    insertWord (list, paragraph_number, &word);
 
                     paragraph_number++;
-                    n=0;
-                    for(i=0; i<30;i++)
+                    n = 0;
+                    for (i=0; i < 30; i++)
                         word[i] = '\0';                    
                     
-                    i=0;
+                    i = 0;
                     break;
                 }
                 else
@@ -357,7 +362,8 @@ void readInput (List* list)
     }
 }
 
-void write_char_to_output (char word[], FILE *output_file, int max_quantity)
+void
+write_char_to_output (char word[], FILE *output_file, int max_quantity)
 {
     for (int i = 0; i < max_quantity; i++)
     {
@@ -366,15 +372,16 @@ void write_char_to_output (char word[], FILE *output_file, int max_quantity)
         else return;
     }
 }
-void write_int_to_output (int array[], FILE *output_file, int max_quantity)
+void
+write_int_to_output (int array[], FILE *output_file, int max_quantity)
 {
     for (int i = 0; i < max_quantity; i++)
     {
         if (array[i] != '\0')
         {
             char number[4];
-            int num = sprintf(number, "%d", array[i]);
-            write_char_to_output(number, output_file, 5);
+            int num = sprintf (number, "%d", array[i]);
+            write_char_to_output (number, output_file, 5);
             if (array[i+1] != '\0')
                 fputc(',', output_file);
         }
@@ -385,9 +392,9 @@ void write_int_to_output (int array[], FILE *output_file, int max_quantity)
 void printList (List* list, bool print_on_terminal, bool print_in_html,
                 bool print_in_txt, bool print_in_csv)
 {   
-    FILE *html_output = fopen("output.html", "w");
-    FILE *txt_output = fopen("output.txt", "w");
-    FILE *csv_output = fopen("output.csv", "w");
+    FILE *html_output = fopen ("output.html", "w");
+    FILE *txt_output = fopen ("output.txt", "w");
+    FILE *csv_output = fopen ("output.csv", "w");
     
     int x = 0;
     Node *aux = list -> head;
@@ -396,7 +403,7 @@ void printList (List* list, bool print_on_terminal, bool print_in_html,
 
     if(print_in_html)
     {
-        fwrite("<!DOCTYPE html>\n\
+        fwrite ("<!DOCTYPE html>\n\
     <html lang=\"en\">\n\
     <head>\n\
         <meta charset=\"UTF-8\">\n\
@@ -412,94 +419,96 @@ void printList (List* list, bool print_on_terminal, bool print_in_html,
     {
         if (print_on_terminal)
         {
-            printf("%s -> ", aux -> word);
-            printf("Paragrafo: ");
+            printf ("%s -> ", aux -> word);
+            printf ("Paragrafo: ");
         }
         if (print_in_html)
         {  
-            fwrite("<h1>", 4, 1, html_output);
-            write_char_to_output(aux -> word, html_output, 30);
-            fwrite("</h1>\n<p>Parágrafos: ", 22, 1, html_output);
-            write_int_to_output(aux -> paragraph, html_output, 25);
-            fwrite("</p>\n", 5, 1, html_output);
+            fwrite ("<h1>", 4, 1, html_output);
+            write_char_to_output (aux -> word, html_output, 30);
+            fwrite ("</h1>\n<p>Parágrafos: ", 22, 1, html_output);
+            write_int_to_output (aux -> paragraph, html_output, 25);
+            fwrite ("</p>\n", 5, 1, html_output);
         }
         if (print_in_txt)
         {
-            write_char_to_output(aux -> word, txt_output, 30);
-            fwrite(": ", 2, 1, txt_output);
-            write_int_to_output(aux -> paragraph, txt_output, 25);
-            fwrite("\n", 1, 1, txt_output);
+            write_char_to_output (aux -> word, txt_output, 30);
+            fwrite (": ", 2, 1, txt_output);
+            write_int_to_output (aux -> paragraph, txt_output, 25);
+            fwrite ("\n", 1, 1, txt_output);
         }
         if (print_in_csv)
         {
-            write_char_to_output(aux -> word, csv_output, 30);
-            fwrite(",", 1, 1, csv_output);
-            write_int_to_output(aux -> paragraph, csv_output, 25);
-            fwrite("\n", 1, 1, csv_output);
+            write_char_to_output (aux -> word, csv_output, 30);
+            fwrite (",", 1, 1, csv_output);
+            write_int_to_output (aux -> paragraph, csv_output, 25);
+            fwrite ("\n", 1, 1, csv_output);
         }
                 
         while (aux -> paragraph[x] > 0)
         {
             if (print_on_terminal)
-                printf("%d, ", aux->paragraph[x]);
+                printf ("%d, ", aux->paragraph[x]);
             x++;
         }
         if (print_on_terminal)
-            printf("\n");
-        x=0;
+            printf ("\n");
+        x = 0;
         aux = aux -> next; 
     }
     
-    if(print_in_html)
+    if (print_in_html)
     {
-        fwrite("    </body>\n\
+        fwrite ("    </body>\n\
 </html>", 19, 1, html_output);
     }
 
-    fclose(html_output);
-    fclose(txt_output);
-    fclose(csv_output);
+    fclose (html_output);
+    fclose (txt_output);
+    fclose (csv_output);
 }
 
-void printNode (Node* node)
+void
+printNode (Node* node)
 {
     Node *aux = node;
     int i = 0;
-    if(node!= NULL)
+    if (node != NULL)
     {
-        while(node->word[i]!=0)
+        while (node -> word[i] != 0)
         {   
-            printf("%c",node->word[i]);
+            printf ("%c", node -> word[i]);
             i++;
         }
-        printf(" -> Paragrafo:");
-        i=0;
-        while(node->paragraph[i]!=0)
+        printf (" -> Paragrafo:");
+
+        i = 0;
+        while (node -> paragraph[i] != 0)
         {   
-            printf("%d, ",node->paragraph[i]);
+            printf("%d, ", node -> paragraph[i]);
             i++;
         }
     }
-    else printf("Esse node não existe");
+    else printf ("Esse node não existe");
 }
 
-int main (int argc, char** argv)
+int
+main (int argc, char** argv)
 {
     List *list;
 
     if (((list = (List*)malloc(sizeof(List))) == NULL))
         return -1;
     
-    newList(list);
-    readInput(list);
-    bubbleSort(list);
-    //printList(list);
+    newList (list);
+    readInput (list);
+    bubbleSort (list);
 
     //TESTE FUNÇÃO PESQUISA PALAVRA
-    printf("PESQUISA PALAVRA:\n");
+    printf ("PESQUISA PALAVRA:\n");
     char word[30] = {'f','u','n','c','i','o','n','a'};
-    printNode(getWord(list,&word));
-    printf("\n");
+    printNode (getWord (list, &word));
+    printf ("\n");
 
     int i;
     for (i = 0; i < argc; i ++)
@@ -511,17 +520,16 @@ int main (int argc, char** argv)
     bool print_in_txt = false;
     bool print_in_csv = false;
 
-    while ((op = getopt(argc, argv, "vuswtce")) != EOF)
+    while ((op = getopt (argc, argv, "vuswtce")) != EOF)
     {
         switch (op)
         {
             case 'v':
-                version();
+                version ();
             case 'u':
-                usage();
+                usage ();
                 break;
             case 's':
-                //readInput(list);
                 print_on_terminal = true;
                 break;
             case 'w':
@@ -536,13 +544,13 @@ int main (int argc, char** argv)
             case 'e':
                 return 0;
             default:
-                readInput(list);
+                readInput (list);
         }
     }
 
     if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
-        printList(list, print_on_terminal, print_in_html, print_in_txt, print_in_csv);
+        printList (list, print_on_terminal, print_in_html, print_in_txt, print_in_csv);
     else
-        usage();
+        usage ();
 
 }
