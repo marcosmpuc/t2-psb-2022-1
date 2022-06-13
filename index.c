@@ -5,9 +5,6 @@
 #include <getopt.h>
 
 #define PROGRAM_NAME "index"
-#define AUTHORS \
-    proper_name ("Isabella B") \
-    proper_name ("Marcos M")
 
 #define BUFFERSIZE 512
 static char line_buffer[BUFFERSIZE];
