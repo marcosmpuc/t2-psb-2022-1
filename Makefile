@@ -1,2 +1,2 @@
 index:
-	gcc -o index.c
+	gcc -o index index.c
