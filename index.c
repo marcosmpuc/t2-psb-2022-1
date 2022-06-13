@@ -7,7 +7,13 @@
 #define BUFFERSIZE 512
 #define WORDSIZE 512
 #define PARAGRAPHCOUNT 1024
+#define PROGRAM_NAME "index"
+#define AUTHORS \
+    proper_name("Isabella B") \
+    proper_name("Marcos M")
 static char line_buffer[BUFFERSIZE];
+
+
 
 typedef struct Node
 {
