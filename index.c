@@ -36,20 +36,20 @@ void usage (void)
     EN-US: Index generator command options - Versão 0.3.12\n\
     PT-BR: Opções de comando do gerador de índice remissivo - Versão 0.3.12\n\
     \n\
-    -u to view usage options\n\
-    -u para visualizar opções de visualização\n\
+    -u (\"usage\") to view usage options\n\
+    -u (\"usage\") para visualizar opções de visualização\n\
     \n\
-    -s to view index entries in terminal (shell)\n\
-    -s para visualizar registros do índice no terminal (shell)\n\
+    -s (\"shell\") to view index entries in terminal (shell)\n\
+    -s (\"shell\") para visualizar registros do índice no terminal (shell)\n\
     \n\
-    -h to generate HTML file\n\
-    -h para gerar arquivo HTML\n\
+    -w (\"web\") to generate HTML file\n\
+    -w (\"web\") para gerar arquivo HTML\n\
     \n\
-    -t to generate .txt file\n\
-    -t para gerar arquivo .txt\n\
+    -t (\"txt\") to generate .txt file\n\
+    -t (\"txt\") para gerar arquivo .txt\n\
     \n\
-    -c to generate .csv file (order of columns: word; paragraph. separator: comma)\n\
-    -c para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
+    -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma)\n\
+    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
 }
 
 void newList (List* list)
@@ -335,26 +335,108 @@ void readInput (List* list)
     }
 }
 
-void printList (List* list)
+void write_char_to_output (char word[], FILE *output_file, int max_quantity)
+{
+    for (int i = 0; i < max_quantity; i++)
+    {
+        if (word[i] != '\0')
+            fputc(word[i], output_file);
+        else return;
+    }
+}
+void write_int_to_output (int array[], FILE *output_file, int max_quantity)
+{
+    for (int i = 0; i < max_quantity; i++)
+    {
+        if (array[i] != '\0')
+        {
+            char number[4];
+            int num = sprintf(number, "%d", array[i]);
+            write_char_to_output(number, output_file, 5);
+            if (array[i+1] != '\0')
+                fputc(',', output_file);
+        }
+        else return;
+    }
+}
+
+void printList (List* list, bool print_on_terminal, bool print_in_html,
+                bool print_in_txt, bool print_in_csv)
 {   
+    FILE *html_output = fopen("output.html", "w");
+    FILE *txt_output = fopen("output.txt", "w");
+    FILE *csv_output = fopen("output.csv", "w");
+    
     int x = 0;
     Node *aux = list -> head;
-    printf("Tamanho da lista = %d\n", list -> listSize);
+    if(print_in_html)
+        printf("Tamanho da lista = %d\n", list -> listSize);
+
+    if(print_in_html)
+    {
+        fwrite("<!DOCTYPE html>\n\
+    <html lang=\"en\">\n\
+    <head>\n\
+        <meta charset=\"UTF-8\">\n\
+        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\
+        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\
+        <title>Document</title>\n\
+        <link rel=\"stylesheet\" href=\"output.css\">\n\
+    </head>\n\
+    <body>\n", 317, 1, html_output);
+    }
 
     while (aux != NULL)
     {
-        printf("%s -> ", aux -> word);
-        printf("Paragrafo: ");
+        if (print_on_terminal)
+        {
+            printf("%s -> ", aux -> word);
+            printf("Paragrafo: ");
+        }
+        if (print_in_html)
+        {  
+            fwrite("<h1>", 4, 1, html_output);
+            write_char_to_output(aux -> word, html_output, 30);
+            fwrite("</h1>\n<p>Parágrafos: ", 22, 1, html_output);
+            write_int_to_output(aux -> paragraph, html_output, 25);
+            fwrite("</p>\n", 5, 1, html_output);
+        }
+        if (print_in_txt)
+        {
+            write_char_to_output(aux -> word, txt_output, 30);
+            fwrite(": ", 2, 1, txt_output);
+            write_int_to_output(aux -> paragraph, txt_output, 25);
+            fwrite("\n", 1, 1, txt_output);
+        }
+        if (print_in_csv)
+        {
+            write_char_to_output(aux -> word, csv_output, 30);
+            fwrite(",", 1, 1, csv_output);
+            write_int_to_output(aux -> paragraph, csv_output, 25);
+            fwrite("\n", 1, 1, csv_output);
+        }
                 
         while (aux -> paragraph[x] > 0)
         {
-            printf("%d, ", aux->paragraph[x]);
+            if (print_on_terminal)
+                printf("%d, ", aux->paragraph[x]);
             x++;
         }
-        printf("\n");
+        if (print_on_terminal)
+            printf("\n");
         x=0;
         aux = aux -> next; 
     }
+    
+    if(print_in_html)
+    {
+        fwrite("    </body>\n\
+</html>", 19, 1, html_output);
+    }
+
+    fclose(html_output);
+    fclose(txt_output);
+    fclose(csv_output);
 }
 
 int main (int argc, char** argv)
@@ -367,19 +449,19 @@ int main (int argc, char** argv)
     newList(list);
     readInput(list);
     bubbleSort(list);
-    printList(list);
+    //printList(list);
 
     int i;
     for (i = 0; i < argc; i ++)
         printf("%d- Parametro = \"%s\"\n", i + 1, argv[i]);
 
     int op;
-    int print_on_terminal = 0; 
-    int print_in_html = 0;
-    int print_in_txt = 0;
-    int print_in_csv = 0;
+    bool print_on_terminal = false; 
+    bool print_in_html = false;
+    bool print_in_txt = false;
+    bool print_in_csv = false;
 
-    while ((op = getopt(argc, argv, "vushtce")) != EOF)
+    while ((op = getopt(argc, argv, "vuswtce")) != EOF)
     {
         switch (op)
         {
@@ -389,16 +471,17 @@ int main (int argc, char** argv)
                 usage();
                 break;
             case 's':
-                readInput(list);
+                //readInput(list);
+                print_on_terminal = true;
                 break;
-            case 'h':
-                print_in_html = 1;
+            case 'w':
+                print_in_html = true;
                 break;
             case 't':
-                print_in_txt = 1;
+                print_in_txt = true;
                 break;
             case 'c':
-                print_in_csv = 1;
+                print_in_csv = true;
                 break;
             case 'e':
                 return 0;
@@ -406,4 +489,10 @@ int main (int argc, char** argv)
                 readInput(list);
         }
     }
+
+    if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
+        printList(list, print_on_terminal, print_in_html, print_in_txt, print_in_csv);
+    else
+        usage();
+
 }
