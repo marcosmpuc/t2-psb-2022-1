@@ -160,8 +160,81 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     }
 }
 
+<<<<<<< HEAD
 void sort()
 {
+=======
+void sort(List *list){
+    if(list->listSize>1)
+    {
+        Node *node = list->head;
+       
+       while(node!=NULL)
+       {
+            Node *nodeNext = node->next;
+            while (nodeNext!=NULL)
+            {
+                int retorno = stricmp(node->word,nodeNext->word);
+                if(retorno>0)
+                {
+                    //aux <- node
+                    char auxWord[30];
+                    int i = 0;
+                    int auxParagraph[25];
+
+                    while(i<30)
+                    {
+                        auxWord[i]= node->word[i];
+                        i++;
+                    }
+                    i=0;
+                    while(i<25)
+                    {
+                        auxParagraph[i]= node->paragraph[i];
+                        i++;
+                    }
+                    i=0;
+                    //node <- nodeNext
+                    while(i<30)
+                    {
+                        node->word[i] = nodeNext->word[i];
+                        i++;
+                    }
+                    i=0;
+                    while(i<25)
+                    {
+                        node->paragraph[i]=nodeNext->paragraph[i];
+                        i++;
+                    }
+
+                    //nodeNext <- aux
+                    while(i<30)
+                    {
+                        nodeNext->word[i]= auxWord[i];
+                        i++;
+                    }
+                    i=0;
+                    while(i<25)
+                    {
+                        nodeNext->paragraph[i]=auxParagraph[i];
+                        i++;
+                    }
+                    node = nodeNext;
+                    nodeNext = nodeNext->next;                                        
+                }
+                else
+                if(retorno<0||retorno==0)
+                {
+                    node = nodeNext;
+                    nodeNext = nodeNext->next;
+                }
+                else{
+                    break;
+                }
+            }
+       }
+    }  
+>>>>>>> 54fc66dd17544815f4f87d0bbba5a3bbd1955eb3
 }
 
 int isEqual (List* list, char* word)
@@ -305,6 +378,7 @@ int main (int argc, char** argv)
     
     newList(list);
     readInput(list);
+    sort(list);
     printList(list);
 
     int i;
