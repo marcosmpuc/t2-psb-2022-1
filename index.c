@@ -242,6 +242,28 @@ int isEqual(List *list, char *word){
     return 0; //se forem iguais
 }
 
+
+Node *getWord(List *list, char *word)
+{
+    Node *aux = list->head;
+    char wordIn[30];
+    int i = 0;
+    while(i<30)
+    {   
+        wordIn[i] = word[i];
+        i++;
+    }
+    while (aux != NULL)
+    {
+        int retorno = stricmp(wordIn, aux->word);
+        //se 0 entao sao iguais
+        if (retorno == 0)
+            return aux;
+        aux = aux -> next; 
+    }
+    
+}
+
 void readInput (List* list)
 {
     Node *new;
@@ -439,6 +461,28 @@ void printList (List* list, bool print_on_terminal, bool print_in_html,
     fclose(csv_output);
 }
 
+void printNode (Node* node)
+{
+    Node *aux = node;
+    int i = 0;
+    if(node!= NULL)
+    {
+        while(node->word[i]!=0)
+        {   
+            printf("%c",node->word[i]);
+            i++;
+        }
+        printf(" -> Paragrafo:");
+        i=0;
+        while(node->paragraph[i]!=0)
+        {   
+            printf("%d, ",node->paragraph[i]);
+            i++;
+        }
+    }
+    else printf("Esse node não existe");
+}
+
 int main (int argc, char** argv)
 {
     List *list;
@@ -450,6 +494,12 @@ int main (int argc, char** argv)
     readInput(list);
     bubbleSort(list);
     //printList(list);
+
+    //TESTE FUNÇÃO PESQUISA PALAVRA
+    printf("PESQUISA PALAVRA:\n");
+    char word[30] = {'f','u','n','c','i','o','n','a'};
+    printNode(getWord(list,&word));
+    printf("\n");
 
     int i;
     for (i = 0; i < argc; i ++)
