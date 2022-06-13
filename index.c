@@ -176,48 +176,7 @@ void sort(List *list){
                 int retorno = stricmp(node->word,nodeNext->word);
                 if(retorno>0)
                 {
-                    //aux <- node
-                    char auxWord[30];
-                    int i = 0;
-                    int auxParagraph[25];
-
-                    while(i<30)
-                    {
-                        auxWord[i]= node->word[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        auxParagraph[i]= node->paragraph[i];
-                        i++;
-                    }
-                    i=0;
-                    //node <- nodeNext
-                    while(i<30)
-                    {
-                        node->word[i] = nodeNext->word[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        node->paragraph[i]=nodeNext->paragraph[i];
-                        i++;
-                    }
-
-                    //nodeNext <- aux
-                    while(i<30)
-                    {
-                        nodeNext->word[i]= auxWord[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        nodeNext->paragraph[i]=auxParagraph[i];
-                        i++;
-                    }
+                    swap(node,nodeNext);
                     node = nodeNext;
                     nodeNext = nodeNext->next;                                        
                 }
@@ -233,6 +192,52 @@ void sort(List *list){
             }
        }
     }  
+}
+
+void swap(Node *node, Node* nodeNext)
+{
+    //aux <- node
+    char auxWord[30];
+    int i = 0;
+    int auxParagraph[25];
+
+    while(i<30)
+    {
+        auxWord[i]= node->word[i];
+        i++;
+    }
+    i=0;
+    while(i<25)
+    {
+        auxParagraph[i]= node->paragraph[i];
+        i++;
+    }
+    i=0;
+    //node <- nodeNext
+    while(i<30)
+    {
+        node->word[i] = nodeNext->word[i];
+         i++;
+    }
+    i=0;
+    while(i<25)
+    {
+        node->paragraph[i]=nodeNext->paragraph[i];
+        i++;
+    }
+    i=0;
+    //nodeNext <- aux
+    while(i<30)
+    {
+        nodeNext->word[i]= auxWord[i];
+        i++;
+    }
+        i=0;
+    while(i<25)
+    {
+        nodeNext->paragraph[i]=auxParagraph[i];
+         i++;
+    }
 }
 
 int isEqual(List *list, char *word){
