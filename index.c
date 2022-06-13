@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-using namespace std;
-
 #define BUFFERSIZE 512
 #define WORDSIZE 512
 #define PARAGRAPHCOUNT 1024

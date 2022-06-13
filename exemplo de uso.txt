@@ -5,3 +5,13 @@ Item g: Exemplo de uso; para quê um índice remissivo é útil?
 	O índice remissivo, é, enfim, útil em qualquer contexto onde alguém tenha um nome específico em mente e queira aprender mais sobre aquilo a que este nome se refere, ou aquilo que o tange no âmbito da obra.
 
 	Este programa, além de oferecer uma lista exaustiva e alfabetizada das palavras que encontrar, também permite que o usuário pesquise por uma palavra específica.
+
+Exemplos do uso do código
+	Para imprimir um índice remissivo chamado "indice.txt" em formato txt a partir de um arquivo chamado "input.txt"
+		./index.exe -i "input.txt" -t "indice.txt"
+	Para imprimir no terminal quais parágrafos apresentam a palavra "palavra" no arquivo "input.txt"
+		./index.exe -i "input.txt" -l "palavra"
+	Para imprimir um arquivo CSV com palavras e seus respectivos parágrafos, a partir de um arquivo "input.txt".
+		./index.exe -i "input.txt" -c "paragrafos.csv"
+	Para imprimir o índice remissivo no terminal e em um arquivo HTML, a partir de um arquivo "input.txt".
+		./index.exe -i "input.txt" -s -w "webformat.html"
