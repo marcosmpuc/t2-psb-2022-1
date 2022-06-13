@@ -47,14 +47,14 @@ usage (void)
     -s (\"shell\") to view index entries in terminal (shell)\n\
     -s (\"shell\") para visualizar registros do índice no terminal (shell)\n\
     \n\
-    -w (\"web\") to generate HTML file\n\
-    -w (\"web\") para gerar arquivo HTML\n\
+    -w (\"web\") to generate HTML file - requires 1 argument: desired name for output file\n\
+    -w (\"web\") para gerar arquivo HTML - requer 1 argumento: nome desejado para o arquivo de saída\n\
     \n\
-    -t (\"txt\") to generate .txt file\n\
-    -t (\"txt\") para gerar arquivo .txt\n\
+    -t (\"txt\") to generate .txt file - requires 1 argument: desired name for output file\n\
+    -t (\"txt\") para gerar arquivo .txt - requer 1 argumento: nome desejado para o arquivo de saída\n\
     \n\
-    -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma)\n\
-    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
+    -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma) - requires 1 argument: desired name for output file\n\
+    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula) - requer 1 argumento: nome desejado para o arquivo de saída");
 }
 
 void
@@ -385,12 +385,12 @@ write_int_to_output (int array[], FILE *output_file, int max_quantity)
     }
 }
 
-void printList (List* list, bool print_on_terminal, bool print_in_html,
-                bool print_in_txt, bool print_in_csv)
+void printList (List *list, bool print_on_terminal, bool print_in_html,
+                char *html_output_name, bool print_in_txt, char *txt_output_name, bool print_in_csv, char *csv_output_name)
 {   
-    FILE *html_output = fopen ("output.html", "w");
-    FILE *txt_output = fopen ("output.txt", "w");
-    FILE *csv_output = fopen ("output.csv", "w");
+    FILE *html_output = fopen (html_output_name, "w");
+    FILE *txt_output = fopen (txt_output_name, "w");
+    FILE *csv_output = fopen (csv_output_name, "w");
     
     int x = 0;
     Node *aux = list -> head;
@@ -500,12 +500,6 @@ main (int argc, char** argv)
     readInput (list);
     bubbleSort (list);
 
-    //TESTE FUNÇÃO PESQUISA PALAVRA
-    printf ("PESQUISA PALAVRA:\n");
-    char word[WORDSIZE] = {'f','u','n','c','i','o','n','a'};
-    printNode (getWord (list, &word));
-    printf ("\n");
-
     int i;
     for (i = 0; i < argc; i ++)
         printf("%d- Parametro = \"%s\"\n", i + 1, argv[i]);
@@ -515,10 +509,13 @@ main (int argc, char** argv)
     bool print_in_html = false;
     bool print_in_txt = false;
     bool print_in_csv = false;
+    char *html_output_name = "output.html";
+    char *txt_output_name = "output.txt";
+    char *csv_output_name = "output.csv";
 
     Node *aux;
 
-    while ((op = getopt (argc, argv, "vuswtcl:e")) != EOF)
+    while ((op = getopt (argc, argv, "vusw:t:c:l:e")) != EOF)
     {
         switch (op)
         {
@@ -533,12 +530,16 @@ main (int argc, char** argv)
                 break;
             case 'w'://web
                 print_in_html = true;
+                printf("%s", optarg);
+                if (optarg) html_output_name = optarg;
                 break;
             case 't'://txt
                 print_in_txt = true;
+                if (optarg) txt_output_name = optarg;
                 break;
             case 'c'://csv
                 print_in_csv = true;
+                if (optarg) csv_output_name = optarg;
                 break;
             case 'l'://lookup
                 //char optarg[WORDSIZE] = 
@@ -547,9 +548,6 @@ main (int argc, char** argv)
                 for (int i = 0; aux -> paragraph[i] != '\0'; i++)
                     printf ("%d\n", aux -> paragraph[i]);
                 return 0;
-            case ':':
-                getWord(list, optarg);
-                break;
             case 'e'://exit
                 return 0;
             default:
@@ -557,8 +555,10 @@ main (int argc, char** argv)
         }
     }
 
+    printf("%s", html_output_name);
+
     if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
-        printList (list, print_on_terminal, print_in_html, print_in_txt, print_in_csv);
+        printList (list, print_on_terminal,  print_in_html, html_output_name, print_in_txt, txt_output_name, print_in_csv, csv_output_name);
     else
         usage ();
 
