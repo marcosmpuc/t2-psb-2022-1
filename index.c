@@ -75,11 +75,12 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
         Node *new;
         if ((new = (Node*) malloc (sizeof (Node))) == NULL)
             return -1;
-        for (i = 0; i < 30; i++)
+
+        for (i = 0; i < WORDSIZE; i++)
             new -> word[i] = '\0';
                     
         //zera os paragrafos do novo Node
-        for (i = 0; i < 25; i++)
+        for (i = 0; i < PARAGRAPHCOUNT; i++)
             new -> paragraph[i] = 0;
 
         i = 0;
@@ -113,11 +114,11 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
             return -1;  
 
         //insere \0 nas palavras do novo Node
-        for (i = 0; i < 30; i++)
+        for (i = 0; i < WORDSIZE; i++)
             new -> word[i] = '\0';
                     
         //zera os paragrafos do novo Node
-        for (i = 0; i < 25; i++)
+        for (i = 0; i < PARAGRAPHCOUNT; i++)
             new -> paragraph[i] = 0;
 
         i = 0;
@@ -150,7 +151,7 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
             int retorno = stricmp(wordBuffer, aux -> word);
             //se 0 entao sao iguais
             if (retorno == 0)
-                for (int i = 0; i < 25; i++)
+                for (int i = 0; i < PARAGRAPHCOUNT; i++)
                     if (aux -> paragraph[i] == 0)
                     {
                         aux -> paragraph[i] = paragraph_number;
@@ -169,7 +170,7 @@ bubbleSort (List *list)
         Node *node = list -> head;
        
         while (node != NULL)
-       {
+        {
             Node *nodeNext = node -> next;
             while (nodeNext != NULL)
             {
@@ -284,10 +285,10 @@ readInput (List* list)
     char test;
     int n = 0;
     int paragraph_number = 1;
-    char word[30];
+    char word[WORDSIZE];
     int i;
 
-    for (i = 0; i < 30; i++)
+    for (i = 0; i < WORDSIZE; i++)
         word[i] = '\0';
     i = 0;
 
@@ -298,13 +299,11 @@ readInput (List* list)
 
             if (test == '\n')
             {
-                //PRECISA DE MAIS UM IF PARA CASO O ARQUIVO TENHA ACABADO
                 if (line_buffer[n+1] == '\0')
                 {
                     insertWord (list, paragraph_number, &word);
-                    for (i = 0; i < 30; i++)
+                    for (i = 0; i < WORDSIZE; i++)
                         word[i] = '\0';
-                    
                     paragraph_number++;
                     n = 0;
                     i = 0;
@@ -315,7 +314,7 @@ readInput (List* list)
                     insertWord (list, paragraph_number, &word);
                     paragraph_number++;
                     n = 0;
-                    for (i = 0; i < 30; i++)
+                    for (i = 0; i < WORDSIZE; i++)
                         word[i] = '\0';
                     
                     i = 0;
@@ -334,7 +333,7 @@ readInput (List* list)
             {  
                 insertWord (list, paragraph_number, &word);
                 n++;
-                for (i = 0; i < 30; i++)
+                for (i = 0; i < WORDSIZE; i++)
                     word[i] = '\0';
                 
                 i = 0;
@@ -343,15 +342,11 @@ readInput (List* list)
             {
                 if (line_buffer[n+1] == '\n')
                 {
-                    //if(line_buffer[n+2]=='\0') break;
-                
                     insertWord (list, paragraph_number, &word);
-
                     paragraph_number++;
                     n = 0;
-                    for (i=0; i < 30; i++)
-                        word[i] = '\0';                    
-                    
+                    for (i =0 ; i < WORDSIZE; i++)
+                        word[i] = '\0';
                     i = 0;
                     break;
                 }
@@ -425,23 +420,23 @@ void printList (List* list, bool print_on_terminal, bool print_in_html,
         if (print_in_html)
         {  
             fwrite ("<h1>", 4, 1, html_output);
-            write_char_to_output (aux -> word, html_output, 30);
+            write_char_to_output (aux -> word, html_output, WORDSIZE);
             fwrite ("</h1>\n<p>Parágrafos: ", 22, 1, html_output);
-            write_int_to_output (aux -> paragraph, html_output, 25);
+            write_int_to_output (aux -> paragraph, html_output, PARAGRAPHCOUNT);
             fwrite ("</p>\n", 5, 1, html_output);
         }
         if (print_in_txt)
         {
-            write_char_to_output (aux -> word, txt_output, 30);
+            write_char_to_output (aux -> word, txt_output, WORDSIZE);
             fwrite (": ", 2, 1, txt_output);
-            write_int_to_output (aux -> paragraph, txt_output, 25);
+            write_int_to_output (aux -> paragraph, txt_output, PARAGRAPHCOUNT);
             fwrite ("\n", 1, 1, txt_output);
         }
         if (print_in_csv)
         {
-            write_char_to_output (aux -> word, csv_output, 30);
+            write_char_to_output (aux -> word, csv_output, WORDSIZE);
             fwrite (",", 1, 1, csv_output);
-            write_int_to_output (aux -> paragraph, csv_output, 25);
+            write_int_to_output (aux -> paragraph, csv_output, PARAGRAPHCOUNT);
             fwrite ("\n", 1, 1, csv_output);
         }
                 
@@ -506,7 +501,7 @@ main (int argc, char** argv)
 
     //TESTE FUNÇÃO PESQUISA PALAVRA
     printf ("PESQUISA PALAVRA:\n");
-    char word[30] = {'f','u','n','c','i','o','n','a'};
+    char word[WORDSIZE] = {'f','u','n','c','i','o','n','a'};
     printNode (getWord (list, &word));
     printf ("\n");
 
