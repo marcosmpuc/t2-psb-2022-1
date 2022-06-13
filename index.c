@@ -5,8 +5,8 @@
 #include <unistd.h>
 
 #define BUFFERSIZE 512
-#define WORDSIZE 30
-#define PARAGRAPHCOUNT 25
+#define WORDSIZE 512
+#define PARAGRAPHCOUNT 1024
 static char line_buffer[BUFFERSIZE];
 
 typedef struct Node
@@ -27,34 +27,57 @@ void
 version (void)
 {
     printf ("\
-    EN-US: Index generator - Versão 0.3.17\n\
-    PT-BR: Gerador de índice remissivo - Versão 0.3.17\n\
+    EN-US: Index generator - Version 1.0\n\
+    PT-BR: Gerador de índice remissivo - Versão 1.0\n\
     \n\
     -u to view usage options\n\
     -u para visualizar opções de visualização");
 }
 
 void
+help (void)
+{
+    printf ("\
+    EN-US: This program was created for the completion of a class assignment\n\
+    and is not distributed for any other purposes.\n\
+    Any help besides that already provided by the usage instructions (terminal option \"-u\")\n\
+    will not be offered.\n\
+    PT-BR: Este programa foi criado para a realização de um trabalho avaliativo\n\
+    e não é distrubuído para quaiquer outros fins.\n\
+    Qualquer ajuda além daquela providenciada pelas instruções de uso (opção de terminal \"-u\")\n\
+    não sera oferecida.");
+}
+
+void
 usage (void)
 {
     printf ("\
-    EN-US: Index generator command options - Versão 0.3.12\n\
-    PT-BR: Opções de comando do gerador de índice remissivo - Versão 0.3.12\n\
+    EN-US: Index generator command options - Version X.X\n\
+    PT-BR: Opções de comando do gerador de índice remissivo - Versão X.X\n\
     \n\
     -u (\"usage\") to view usage options\n\
     -u (\"usage\") para visualizar opções de visualização\n\
     \n\
+    -h (\"help\") to see help notice\n\
+    -h (\"help\") para visualizar notificação sobre ajuda\n\
+    \n\
+    -v (\"version\") to view version information\n\
+    -v (\"version\") para visualizar informações sobre versão\n\
+    \n\
+    -i (\"input\") to indicate what file will be read\n\trequires 1 argument: name of file to be read (with filename extension)\n\
+    -i (\"input\") para indicar qual arquivo será lido\n\trequer 1 argumento: nome do arquivo a ser lido (com extensão de nome de arquivo)\n\
+    \n\
     -s (\"shell\") to view index entries in terminal (shell)\n\
     -s (\"shell\") para visualizar registros do índice no terminal (shell)\n\
     \n\
-    -w (\"web\") to generate HTML file - requires 1 argument: desired name for output file\n\
-    -w (\"web\") para gerar arquivo HTML - requer 1 argumento: nome desejado para o arquivo de saída\n\
+    -w (\"web\") to generate HTML file\n\trequires 1 argument: desired name for output file (with filename extension)\n\
+    -w (\"web\") para gerar arquivo HTML\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\n\
     \n\
-    -t (\"txt\") to generate .txt file - requires 1 argument: desired name for output file\n\
-    -t (\"txt\") para gerar arquivo .txt - requer 1 argumento: nome desejado para o arquivo de saída\n\
+    -t (\"txt\") to generate .txt file\n\trequires 1 argument: desired name for output file (with filename extension)\n\
+    -t (\"txt\") para gerar arquivo .txt\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\n\
     \n\
-    -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma) - requires 1 argument: desired name for output file\n\
-    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula) - requer 1 argumento: nome desejado para o arquivo de saída");
+    -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma)\n\trequires 1 argument: desired name for output file (with filename extension)\n\
+    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula)\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)");
 }
 
 void
@@ -149,7 +172,7 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     
         while (aux != NULL)
         {
-            int retorno = stricmp(wordBuffer, aux -> word);
+            int retorno = stricmp (wordBuffer, aux -> word);
             //se 0 entao sao iguais
             if (retorno == 0)
                 for (int i = 0; i < PARAGRAPHCOUNT; i++)
@@ -278,10 +301,10 @@ getWord (List *list, char *word)
 }
 
 void
-readInput (List* list)
+readInput (char *input_name, List *list)
 {
     Node *new;
-    FILE *input = fopen ("input.txt","r");
+    FILE *input = fopen (input_name, "r");
 
     char test;
     int n = 0;
@@ -368,6 +391,7 @@ write_char_to_output (char word[], FILE *output_file, int max_quantity)
         else return;
     }
 }
+
 void
 write_int_to_output (int array[], FILE *output_file, int max_quantity)
 {
@@ -386,7 +410,8 @@ write_int_to_output (int array[], FILE *output_file, int max_quantity)
 }
 
 void printList (List *list, bool print_on_terminal, bool print_in_html,
-                char *html_output_name, bool print_in_txt, char *txt_output_name, bool print_in_csv, char *csv_output_name)
+                char *html_output_name, bool print_in_txt, char *txt_output_name,
+                bool print_in_csv, char *csv_output_name)
 {   
     FILE *html_output = fopen (html_output_name, "w");
     FILE *txt_output = fopen (txt_output_name, "w");
@@ -491,15 +516,6 @@ printNode (Node* node)
 int
 main (int argc, char** argv)
 {
-    List *list;
-
-    if (((list = (List*)malloc(sizeof(List))) == NULL))
-        return -1;
-    
-    newList (list);
-    readInput (list);
-    bubbleSort (list);
-
     int i;
     for (i = 0; i < argc; i ++)
         printf("%d- Parametro = \"%s\"\n", i + 1, argv[i]);
@@ -509,28 +525,35 @@ main (int argc, char** argv)
     bool print_in_html = false;
     bool print_in_txt = false;
     bool print_in_csv = false;
+    bool lookup = false;
     char *html_output_name = "output.html";
     char *txt_output_name = "output.txt";
     char *csv_output_name = "output.csv";
+    char *input_name = "input.txt";
+    Node *lookup_aux = NULL;
 
-    Node *aux;
-
-    while ((op = getopt (argc, argv, "vusw:t:c:l:e")) != EOF)
+    while ((op = getopt (argc, argv, "uhvi:sw:t:c:l:e")) != EOF)
     {
         switch (op)
         {
+            case 'u'://usage
+                usage ();
+                break;
+            case 'h'://help
+                help ();
+                break;
             case 'v'://version
                 version ();
                 break;
-            case 'u'://usage
-                usage ();
+            case 'i':
+                if (optarg) input_name = optarg;
+                printf ("%s\n", optarg);
                 break;
             case 's'://shell
                 print_on_terminal = true;
                 break;
             case 'w'://web
                 print_in_html = true;
-                printf("%s", optarg);
                 if (optarg) html_output_name = optarg;
                 break;
             case 't'://txt
@@ -543,22 +566,34 @@ main (int argc, char** argv)
                 break;
             case 'l'://lookup
                 //char optarg[WORDSIZE] = 
-                aux = getWord (list, optarg);
-                printf ("\"%s\" se encontra nos parágrafos\n", aux -> word);
-                for (int i = 0; aux -> paragraph[i] != '\0'; i++)
-                    printf ("%d\n", aux -> paragraph[i]);
+                lookup = true;
+                lookup_aux = optarg;
                 return 0;
             case 'e'://exit
                 return 0;
-            default:
-                readInput (list);
         }
     }
+    
+    List *list;
 
-    printf("%s", html_output_name);
+    if (((list = (List*) malloc (sizeof (List))) == NULL))
+        return -1;
+    
+    newList (list);
+    printf ("%s\n", input_name);
+    readInput (input_name, list);
+    bubbleSort (list);
+
+    if (lookup)
+    {
+        getWord (list, lookup_aux);
+        printf ("\"%s\" se encontra nos parágrafos\n", lookup_aux -> word);
+        for (int i = 0; lookup_aux -> paragraph[i] != '\0'; i++)
+            printf ("%d\n", lookup_aux -> paragraph[i]);
+    }
 
     if (print_on_terminal || print_in_html || print_in_txt || print_in_csv)
-        printList (list, print_on_terminal,  print_in_html, html_output_name, print_in_txt, txt_output_name, print_in_csv, csv_output_name);
+        printList (list, print_on_terminal, print_in_html, html_output_name, print_in_txt, txt_output_name, print_in_csv, csv_output_name);
     else
         usage ();
 

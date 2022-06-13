@@ -1,5 +1,7 @@
 Item g: Exemplo de uso; para quê um índice remissivo é útil?
+	
 	O propósito de um índice remissivo é permitir que um leitor procure trechos específicos de uma obra através de palavras-chave, em contraste a um sumário, que lista seções de uma obra da forma como ela foi particionada em seu decorrer.
 	Ele pode ser conveniente quando um historiador estiver procurando detalhes sobre uma figura histórica. Um jornalista pode usá-lo para procurar menções de um evento dentro de um contexto histórico. Um estudante pode usá-lo para procurar informações técnicas sobre algo de interesse.
 	O índice remissivo, é, enfim, útil em qualquer contexto onde alguém tenha um nome específico em mente e queira aprender mais sobre aquilo a que este nome se refere, ou aquilo que o tange no âmbito da obra.
-	
+
+	Este programa, além de oferecer uma lista exaustiva e alfabetizada das palavras que encontrar, também permite que o usuário pesquise por uma palavra específica.
