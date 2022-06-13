@@ -83,10 +83,10 @@ usage (void)
     -t (\"txt\") para gerar arquivo .txt\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\n\
     \n\
     -c (\"csv\") to generate .csv file (order of columns: word; paragraph. separator: comma)\n\trequires 1 argument: desired name for output file (with filename extension)\n\
-    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula)\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\
+    -c (\"csv\") para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula)\n\trequer 1 argumento: nome desejado para o arquivo de saída (com extensão de nome de arquivo)\n\
     \n\
     -l (\"lookup\") to output on the terminal which paragraphs feature a given word\n\trequires 1 argument: desired word\n\
-    -l (\"lookup\") para escrever no terminal quais parágrafos apresentam certa palavra\n\trequer 1 argumento: palavra desejada\
+    -l (\"lookup\") para escrever no terminal quais parágrafos apresentam certa palavra\n\trequer 1 argumento: palavra desejada\n\
     \n\
     -n (\"number\") to output the number of paragraphs that feature a given word\n\trequires 1 argument: desired word\n\
     -n (\"number\") para escrever no terminal o número de parágrafos que apresentam certa palavra\n\trequer 1 argumento: palavra desejada");
@@ -182,7 +182,7 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     
         while (aux != NULL)
         {
-            int retorno = stricmp (wordBuffer, aux -> word);
+            int retorno = strcasecmp (wordBuffer, aux -> word);
             //se 0 entao sao iguais
             if (retorno == 0)
                 for (int i = 0; i < PARAGRAPHCOUNT; i++)
@@ -208,7 +208,7 @@ bubbleSort (List *list)
             Node *nodeNext = node -> next;
             while (nodeNext != NULL)
             {
-                int retorno = stricmp (node->word,nodeNext->word);
+                int retorno = strcasecmp (node->word,nodeNext->word);
                 if (retorno > 0)
                 {
                     swap (node, nodeNext);                                      
@@ -276,7 +276,7 @@ isEqual (List *list, char *word)
     
     while (aux != NULL)
     {
-        int retorno = stricmp (word, aux -> word);
+        int retorno = strcasecmp (word, aux -> word);
         //se 0 entao sao iguais
         if (retorno == 0)
             return 1;
@@ -301,7 +301,7 @@ get_word (List *list, char *word)
     }
     while (aux != NULL)
     {
-        int retorno = stricmp (wordIn, aux -> word);
+        int retorno = strcasecmp (wordIn, aux -> word);
         //se 0 entao sao iguais
         if (retorno == 0)
             return aux;
