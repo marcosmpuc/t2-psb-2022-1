@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <getopt.h>
-
-#define PROGRAM_NAME "index"
 
 #define BUFFERSIZE 512
 static char line_buffer[BUFFERSIZE];
@@ -26,21 +23,11 @@ typedef struct
 void version (void)
 {
     printf ("\
-    EN-US: Index generator - Version x.x\n\
-    PT-BR: Gerador de índice remissivo - Versão x.x\n\
+    EN-US: Index generator - Versão 0.3.17\n\
+    PT-BR: Gerador de índice remissivo - Versão 0.3.17\n\
     \n\
     -u to view usage options\n\
     -u para visualizar opções de visualização");
-}
-
-void help (void)
-{
-    printf("\
-    EN-US: This software was created uniquely to fulfill a class assignment\n\
-    and is available solely per the authors' purposes. Technical support is not offered.\n\
-    PT-BR: Este software foi criado puramente para realizar um trabalho avaliativo\n\
-    e está disponível unicamente em função das necessidades dos autores. Não se oferece suporte técnico.
-    ")
 }
 
 void usage (void)
@@ -49,20 +36,20 @@ void usage (void)
     EN-US: Index generator command options - Versão 0.3.12\n\
     PT-BR: Opções de comando do gerador de índice remissivo - Versão 0.3.12\n\
     \n\
-    -u or --usage to view usage options\n\
-    -u ou --usage para visualizar opções de visualização\n\
+    -u to view usage options\n\
+    -u para visualizar opções de visualização\n\
     \n\
-    -s or --shell to view index entries in terminal (shell)\n\
-    -s ou --shell para visualizar registros do índice no terminal (shell)\n\
+    -s to view index entries in terminal (shell)\n\
+    -s para visualizar registros do índice no terminal (shell)\n\
     \n\
-    -w or --web to generate an HTML file\n\
-    -w ou --web para gerar arquivo HTML\n\
+    -h to generate HTML file\n\
+    -h para gerar arquivo HTML\n\
     \n\
-    -t or --txt to generate a .txt file\n\
-    -t ou --txt para gerar arquivo .txt\n\
+    -t to generate .txt file\n\
+    -t para gerar arquivo .txt\n\
     \n\
-    -c or --csv to generate a .csv file (order of columns: word; paragraph. separator: comma)\n\
-    -c ou --csv para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
+    -c to generate .csv file (order of columns: word; paragraph. separator: comma)\n\
+    -c para gerar arquivo .csv (ordem das colunas: palavra; parágrafo. separador: vírgula");
 }
 
 void newList (List* list)
@@ -170,76 +157,8 @@ insertWord (List* list, int paragraph_number, char* wordBuffer)
     }
 }
 
-void sort(List *list){
-    if(list->listSize>1)
-    {
-        Node *node = list->head;
-       
-       while(node!=NULL)
-       {
-            Node *nodeNext = node->next;
-            while (nodeNext!=NULL)
-            {
-                int retorno = stricmp(node->word,nodeNext->word);
-                if(retorno>0)
-                {
-                    //aux <- node
-                    char auxWord[30];
-                    int i = 0;
-                    int auxParagraph[25];
-
-                    while(i<30)
-                    {
-                        auxWord[i]= node->word[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        auxParagraph[i]= node->paragraph[i];
-                        i++;
-                    }
-                    i=0;
-                    //node <- nodeNext
-                    while(i<30)
-                    {
-                        node->word[i] = nodeNext->word[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        node->paragraph[i]=nodeNext->paragraph[i];
-                        i++;
-                    }
-
-                    //nodeNext <- aux
-                    while(i<30)
-                    {
-                        nodeNext->word[i]= auxWord[i];
-                        i++;
-                    }
-                    i=0;
-                    while(i<25)
-                    {
-                        nodeNext->paragraph[i]=auxParagraph[i];
-                        i++;
-                    }
-                    node = nodeNext;
-                    nodeNext = nodeNext->next;                                        
-                }
-                else
-                if(retorno<0||retorno==0)
-                {
-                    node = nodeNext;
-                    nodeNext = nodeNext->next;
-                }
-                else{
-                    break;
-                }
-            }
-       }
-    }  
+void sort()
+{
 }
 
 int isEqual (List* list, char* word)
@@ -383,7 +302,6 @@ int main (int argc, char** argv)
     
     newList(list);
     readInput(list);
-    sort(list);
     printList(list);
 
     int i;
@@ -396,19 +314,7 @@ int main (int argc, char** argv)
     int print_in_txt = 0;
     int print_in_csv = 0;
 
-    static struct option const long_options[] =
-    {
-        {"version", no_argument, NULL, 'v'},
-        {"usage", no_argument, NULL, 'u'},
-        {"shell", no_argument, NULL, 's'},
-        {"web", no_argument, NULL, 'w'},
-        {"txt", no_argument, NULL, 't'},
-        {"csv", no_argument, NULL, 'c'},
-        {"help", no_argument, NULL, 'h'},
-        {"exit-0", no_argument, NULL, 'e'}
-    };
-
-    while ((op = getopt_long(argc, argv, "vuswtche", long_options, NULL)) != EOF)
+    while ((op = getopt(argc, argv, "vushtce")) != EOF)
     {
         switch (op)
         {
@@ -418,10 +324,9 @@ int main (int argc, char** argv)
                 usage();
                 break;
             case 's':
-                print_on_terminal = 1;
                 readInput(list);
                 break;
-            case 'w':
+            case 'h':
                 print_in_html = 1;
                 break;
             case 't':
@@ -430,12 +335,8 @@ int main (int argc, char** argv)
             case 'c':
                 print_in_csv = 1;
                 break;
-            case 'h':
-                help();
-                break;
             case 'e':
                 return 0;
-                //exit(0);
             default:
                 readInput(list);
         }
